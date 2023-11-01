@@ -1,18 +1,16 @@
 import crypto from 'crypto'
 import { CpfValidator } from './CpfValidator'
+import { AccountDAODatabase } from './AccountDAODatabase'
+import { MailerGateway } from './MailerGateway'
 import { AccountDAO } from './AccountDAO'
 
 export class AccountService {
   cpfValidator: CpfValidator
-  accountDAO: AccountDAO
+  mailerGateway: MailerGateway
 
-  constructor() {
+  constructor(readonly accountDAO: AccountDAO = new AccountDAODatabase()) {
     this.cpfValidator = new CpfValidator()
-    this.accountDAO = new AccountDAO()
-  }
-
-  async sendEmail(email: string, subject: string, message: string) {
-    console.log(email, subject, message)
+    this.mailerGateway = new MailerGateway()
   }
 
   async signup(input: any) {
@@ -27,7 +25,7 @@ export class AccountService {
     if (input.isDriver && !input.carPlate.match(/[A-Z]{3}[0-9]{4}/))
       throw new Error('Invalid plate')
     await this.accountDAO.save(input)
-    await this.sendEmail(
+    await this.mailerGateway.send(
       input.email,
       'Verification',
       `Please verify your code at first login ${input.verificationCode}`,

@@ -53,6 +53,29 @@
 #### Mais lentos
 #### Frágeis, pois são quebrados facilmente, caso a interface com o usuário final seja modificada
 
+## Test Double
+### É um padrão que tem o objetivo de susbstituir um DOC(depended-on component) em um determinado tipo de teste por motivos de performance ou segurança
+### Livro xUnit Test Patterns
+### [Mocks are note Stubs](https://martinfowler.com/articles/mocksArentStubs.html)
+### [The Little Mocker](https://blog.cleancoder.com/uncle-bob/2014/05/14/TheLittleMocker.html)
+### Fake
+#### Uma implementação mais completa que substituirá a real
+
+### Mock
+#### Similar ao stubs e spies, permitem que você diga exatamente o que quer que ele faça e o teste vai quebrar se isso não acontecer
+#### Ex: mocked.once().calledWith(); mocked.verify();
+
+### Spy
+#### Objetos que "espionam" a execução do método e armazenam os resultados para verificação posterior
+#### Ex: Quando eu executar o método fazer pedido preciso saber se o método enviar email foi invocado internamente e com quais parâmetros
+
+### Stub
+#### Objetos que retornam respostas prontas, defnidas para um deterimnado teste, por questão de performance ou segurança
+#### Ex: Quando eu executar o método fazer pedido, preciso que o método pegar cotação do dólar retorne R$3,00
+
+### Dummy
+#### Objetos para completar lista de parâmetros
+
 ## F.I.R.S.T.
 ### F -> Fast: Os testes devem rodar rápido
 ### I -> Independent: Não deve existir dependência entre os testes, eles devem poder ser executados de forma isolada
@@ -90,3 +113,4 @@
 # Table Data Gateway Pattern(sinônimo de DAO(Data Access Object))
 ## Um objeto que atua como um gateway para uma tabela do banco de dados
 ## Trate todo o acesso à tabela em um mesmo lugar
+

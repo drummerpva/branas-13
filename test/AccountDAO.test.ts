@@ -1,9 +1,9 @@
 import { test, expect } from 'vitest'
 import { randomUUID } from 'node:crypto'
-import { AccountDAO } from '../src/AccountDAO'
+import { AccountDAODatabase } from '../src/AccountDAODatabase'
 
 test('Deve criar um registro na tabela account e consultar por email', async () => {
-  const accountDAO = new AccountDAO()
+  const accountDAO = new AccountDAODatabase()
   const account = {
     accountId: randomUUID(),
     name: 'John Doe',
@@ -24,7 +24,7 @@ test('Deve criar um registro na tabela account e consultar por email', async () 
   expect(savedAccount.verification_code).toBe(account.verificationCode)
 })
 test('Deve criar um registro na tabela account e consultar por account_id', async () => {
-  const accountDAO = new AccountDAO()
+  const accountDAO = new AccountDAODatabase()
   const account = {
     accountId: randomUUID(),
     name: 'John Doe',
