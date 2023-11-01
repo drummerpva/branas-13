@@ -82,3 +82,11 @@
 
 # REST
 ## Os verbos não casam com use cases, tendem a se encaixar com CRUDs
+
+# Table Module Pattern
+## Uma unica instância que trata regras de negócio juntamente com os registros de uma tabela de banco de dados
+## Junta regras de negócio e acesso à dados(separando os componentes por tabela)
+
+# Table Data Gateway Pattern(sinônimo de DAO(Data Access Object))
+## Um objeto que atua como um gateway para uma tabela do banco de dados
+## Trate todo o acesso à tabela em um mesmo lugar
