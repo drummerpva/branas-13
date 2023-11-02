@@ -114,3 +114,7 @@
 ## Um objeto que atua como um gateway para uma tabela do banco de dados
 ## Trate todo o acesso à tabela em um mesmo lugar
 
+# Ports and Adapters(Arquitetura Exagonal)
+## Ports = Interfaces que a aplicação irá depender e adaptadores implementaram(Driven Side [AccountDAO, AccountRepository], Driver Side[signup, getAccount])
+## Adapters = Implementação de interfaces criadas para abstrair um recurso ou uso por ator externo
+## Toda Clean Architecture é uma Exagonal
