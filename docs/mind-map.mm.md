@@ -89,7 +89,7 @@
 ### Você não pode escrever mais códiugo do que o suficiente para passar nos testes
 
 
-# Arquitetura Exagonal, Ports and Adapters
+# Arquitetura Hexagonal, Ports and Adapters
 ## Estamos fazendo decisões de Design, que são restringidas pela decisão de arquitetura
 ## Fazer uma separação de responsabilidades
 ### Driver Side/Driver Actor
@@ -114,7 +114,25 @@
 ## Um objeto que atua como um gateway para uma tabela do banco de dados
 ## Trate todo o acesso à tabela em um mesmo lugar
 
-# Ports and Adapters(Arquitetura Exagonal)
+# Ports and Adapters(Arquitetura Hexagonal)
 ## Ports = Interfaces que a aplicação irá depender e adaptadores implementaram(Driven Side [AccountDAO, AccountRepository], Driver Side[signup, getAccount])
 ## Adapters = Implementação de interfaces criadas para abstrair um recurso ou uso por ator externo
-## Toda Clean Architecture é uma Exagonal
+## Toda Clean Architecture é uma Hexagonal
+
+# Clean Architecture
+## Objetivo
+### Desacoplar regras de negócio, dos recursos/tecnologias que a aplicação consome
+### O centro da aplicação não é o banco de dados,nem qualque framework
+### O centro da aplicação são os use cases(casos de uso) e o domínio(regras de negócio)
+## Camadas
+### Entities(entidade) são responsáveis por abstrair as !regras de negócios independentes!, que podem ser desde um objeto com métodos até mesmo um conjunto de funções
+#### Não são as mesma que utilizamos em um Data Mapper(ORM)
+#### O problema do domínio anêmico
+##### Quando você separa os dados do comportamento, a classe fica apenas com os dados, se tornando anêmica
+##### Transaction Script trabalha com domínio anêmico
+#### O Domain Model liga com objetos que comtém dados e comportamentos
+
+# Static Factory Method do Livro Effective Java
+## Você foge do teu construtor e cria instancias através de funções fábricas estáticas
+## Permite separar instanciação da re-hidratação
+## Muito útil para traser semântica a criação e ter opção caso a linguagem não tenha sobrecarga de construtor

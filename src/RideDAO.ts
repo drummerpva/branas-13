@@ -1,7 +1,9 @@
+import { Ride } from './Ride'
+
 export interface RideDAO {
-  save(ride: any): Promise<void>
-  update(ride: any): Promise<void>
-  getById(rideId: string): Promise<any>
+  save(ride: Ride): Promise<void>
+  update(ride: Ride): Promise<void>
+  getById(rideId: string): Promise<Ride>
   getActiveRideByPassengerId(passengerId: string): Promise<any>
   getActiveRideByDriverId(driverId: string): Promise<any>
 }

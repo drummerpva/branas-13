@@ -1,7 +1,8 @@
 import mysql from 'mysql2/promise'
 import { RideDAO } from './RideDAO'
+import { Ride } from './Ride'
 export class RideDAODatabase implements RideDAO {
-  async save(ride: any) {
+  async save(ride: Ride) {
     const connection = await mysql.createConnection(
       'mysql://root:root@localhost:3306/branas13',
     )
@@ -10,39 +11,49 @@ export class RideDAODatabase implements RideDAO {
       [
         ride.rideId,
         ride.passengerId,
-        ride.from.lat,
-        ride.from.long,
-        ride.to.lat,
-        ride.to.long,
-        ride.status,
+        ride.fromLat,
+        ride.fromLong,
+        ride.toLat,
+        ride.toLong,
+        ride.getStatus(),
         ride.date,
       ],
     )
     connection.destroy()
   }
 
-  async update(ride: any): Promise<void> {
+  async update(ride: Ride): Promise<void> {
     const connection = await mysql.createConnection(
       'mysql://root:root@localhost:3306/branas13',
     )
     await connection.query(
       /* sql */
       `update ride set driver_id = ?, status = ? where ride_id = ?`,
-      [ride.driverId, ride.status, ride.rideId],
+      [ride.driverId, ride.getStatus(), ride.rideId],
     )
     connection.destroy()
   }
 
-  async getById(rideId: string) {
+  async getById(rideId: string): Promise<Ride> {
     const connection = await mysql.createConnection(
       'mysql://root:root@localhost:3306/branas13',
     )
-    const [[ride]] = (await connection.query(
+    const [[rideData]] = (await connection.query(
       'SELECT * FROM ride WHERE ride_id = ?',
       [rideId],
     )) as any
     connection.destroy()
-    return ride
+    return Ride.restore(
+      rideData.ride_id,
+      rideData.passenger_id,
+      rideData.driver_id,
+      rideData.status,
+      Number(rideData.from_lat),
+      Number(rideData.from_long),
+      Number(rideData.to_lat),
+      Number(rideData.to_long),
+      rideData.date,
+    )
   }
 
   async getActiveRideByPassengerId(passengerId: string): Promise<any> {

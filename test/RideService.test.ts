@@ -51,13 +51,13 @@ test('Deve solicitar e consultar uma corrida', async () => {
   const rideService = new RideService()
   const outputRequestRide = await rideService.requestRide(inputRequestRide)
   const outputGetRide = await rideService.getRide(outputRequestRide.rideId)
-  expect(outputGetRide.status).toBe('requested')
-  expect(outputGetRide.passenger_id).toBe(outputSignup.accountId)
+  expect(outputGetRide.getStatus()).toBe('requested')
+  expect(outputGetRide.passengerId).toBe(outputSignup.accountId)
   expect(outputGetRide.date).toBeDefined()
-  expect(+outputGetRide.from_lat).toBe(inputRequestRide.from.lat)
-  expect(+outputGetRide.from_long).toBe(inputRequestRide.from.long)
-  expect(+outputGetRide.to_lat).toBe(inputRequestRide.to.lat)
-  expect(+outputGetRide.to_lat).toBe(inputRequestRide.to.lat)
+  expect(outputGetRide.fromLat).toBe(inputRequestRide.from.lat)
+  expect(outputGetRide.fromLong).toBe(inputRequestRide.from.long)
+  expect(outputGetRide.toLat).toBe(inputRequestRide.to.lat)
+  expect(outputGetRide.toLong).toBe(inputRequestRide.to.long)
 })
 test('Deve solicitar e consultar uma corrida e aceitar uma corrida', async () => {
   const accountService = new AccountService()
@@ -96,8 +96,8 @@ test('Deve solicitar e consultar uma corrida e aceitar uma corrida', async () =>
   }
   await rideService.acceptRide(inputAcceptRide)
   const outputGetRide = await rideService.getRide(outputRequestRide.rideId)
-  expect(outputGetRide.status).toBe('accepted')
-  expect(outputGetRide.driver_id).toBe(outputSignupDriver.accountId)
+  expect(outputGetRide.getStatus()).toBe('accepted')
+  expect(outputGetRide.driverId).toBe(outputSignupDriver.accountId)
 })
 test('Caso uma corrida seja solicitada por uma conta que não seja de passageiro deve lançar erro', async () => {
   const inputSignup: any = {
