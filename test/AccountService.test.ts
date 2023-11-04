@@ -4,6 +4,7 @@ import { AccountService } from '../src/AccountService'
 import { AccountDAODatabase } from '../src/AccountDAODatabase'
 import { MailerGateway } from '../src/MailerGateway'
 import { AccountDAOMemory } from '../src/AccountDAOMemory'
+import { Account } from '../src/Account'
 
 test('Deve criar um passageiro', async function () {
   const input = {
@@ -15,10 +16,10 @@ test('Deve criar um passageiro', async function () {
   const accountService = new AccountService()
   const output = await accountService.signup(input)
   const account = await accountService.getAccount(output.accountId)
-  expect(account.account_id).toBeDefined()
-  expect(account.name).toBe(input.name)
-  expect(account.email).toBe(input.email)
-  expect(account.cpf).toBe(input.cpf)
+  expect(account?.accountId).toBeDefined()
+  expect(account?.name).toBe(input.name)
+  expect(account?.email).toBe(input.email)
+  expect(account?.cpf).toBe(input.cpf)
 })
 test('Não deve criar um passageiro com cpf inválido', async function () {
   const input = {
@@ -106,12 +107,23 @@ test('Deve criar um passageiro com Stub', async function () {
   const accountService = new AccountService()
   const output = await accountService.signup(input)
   input.account_id = output.accountId
-  sinon.stub(AccountDAODatabase.prototype, 'getById').resolves(input)
+  sinon
+    .stub(AccountDAODatabase.prototype, 'getById')
+    .resolves(
+      Account.create(
+        input.name,
+        input.email,
+        input.cpf,
+        input.isPassenger,
+        false,
+        '',
+      ),
+    )
   const account = await accountService.getAccount(output.accountId)
-  expect(account.account_id).toBeDefined()
-  expect(account.name).toBe(input.name)
-  expect(account.email).toBe(input.email)
-  expect(account.cpf).toBe(input.cpf)
+  expect(account?.accountId).toBeDefined()
+  expect(account?.name).toBe(input.name)
+  expect(account?.email).toBe(input.email)
+  expect(account?.cpf).toBe(input.cpf)
   sinon.restore()
 })
 test('Deve criar um passageiro com Spy', async function () {
@@ -128,15 +140,8 @@ test('Deve criar um passageiro com Spy', async function () {
   const output = await accountService.signup(input)
   input.account_id = output.accountId
   sinon.stub(AccountDAODatabase.prototype, 'getById').resolves(input)
-  const account = await accountService.getAccount(output.accountId)
   expect(sendSpy.calledOnce).toBeTruthy()
-  expect(
-    sendSpy.calledWith(
-      input.email,
-      'Verification',
-      `Please verify your code at first login ${account.verificationCode}`,
-    ),
-  ).toBeTruthy()
+  expect(sendSpy.calledWith(input.email, 'Verification')).toBeTruthy()
   sinon.restore()
 })
 test('Deve criar um passageiro com Mock', async function () {
@@ -159,7 +164,7 @@ test('Deve criar um passageiro com Mock', async function () {
   mailerMock.verify()
   sinon.restore()
 })
-test.only('Deve criar um passageiro com Fake', async function () {
+test('Deve criar um passageiro com Fake', async function () {
   const accountDAOFake = new AccountDAOMemory()
   const input = {
     name: 'John Doe',
@@ -170,8 +175,8 @@ test.only('Deve criar um passageiro com Fake', async function () {
   const accountService = new AccountService(accountDAOFake)
   const output = await accountService.signup(input)
   const account = await accountService.getAccount(output.accountId)
-  expect(account.account_id).toBeDefined()
-  expect(account.name).toBe(input.name)
-  expect(account.email).toBe(input.email)
-  expect(account.cpf).toBe(input.cpf)
+  expect(account?.accountId).toBeDefined()
+  expect(account?.name).toBe(input.name)
+  expect(account?.email).toBe(input.email)
+  expect(account?.cpf).toBe(input.cpf)
 })

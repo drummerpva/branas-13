@@ -1,7 +1,8 @@
 import mysql from 'mysql2/promise'
 import { AccountDAO } from './AccountDAO'
+import { Account } from './Account'
 export class AccountDAODatabase implements AccountDAO {
-  async save(account: any) {
+  async save(account: Account) {
     const connection = await mysql.createConnection(
       'mysql://root:root@localhost:3306/branas13',
     )
@@ -32,7 +33,18 @@ export class AccountDAODatabase implements AccountDAO {
       [email],
     )) as any[]
     connection.destroy()
-    return accountData
+    if (!accountData) return
+    return Account.restore(
+      accountData.account_id,
+      accountData.name,
+      accountData.email,
+      accountData.cpf,
+      accountData.is_passenger,
+      accountData.is_driver,
+      accountData.car_plate,
+      accountData.date,
+      accountData.verification_code,
+    )
   }
 
   async getById(accountId: string) {
@@ -44,6 +56,17 @@ export class AccountDAODatabase implements AccountDAO {
       [accountId],
     )) as any[]
     connection.destroy()
-    return accountData
+    if (!accountData) return
+    return Account.restore(
+      accountData.account_id,
+      accountData.name,
+      accountData.email,
+      accountData.cpf,
+      accountData.is_passenger,
+      accountData.is_driver,
+      accountData.car_plate,
+      accountData.date,
+      accountData.verification_code,
+    )
   }
 }

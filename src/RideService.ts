@@ -11,7 +11,7 @@ export class RideService {
 
   async requestRide(input: any) {
     const account = await this.accountDAO.getById(input.passengerId)
-    if (!account.is_passenger) throw new Error('Account is not from passenger')
+    if (!account?.isPassenger) throw new Error('Account is not from passenger')
     const activeRides = await this.rideDAO.getActiveRideByPassengerId(
       input.passengerId,
     )
@@ -29,7 +29,7 @@ export class RideService {
 
   async acceptRide(input: any) {
     const account = await this.accountDAO.getById(input.driverId)
-    if (!account.is_driver) throw new Error('Account is not from driver')
+    if (!account?.isDriver) throw new Error('Account is not from driver')
     const ride = await this.getRide(input.rideId)
     ride.accept(input.driverId)
     const activeRides = await this.rideDAO.getActiveRideByDriverId(

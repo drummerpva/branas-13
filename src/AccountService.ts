@@ -1,8 +1,8 @@
-import crypto from 'crypto'
 import { CpfValidator } from './CpfValidator'
 import { AccountDAODatabase } from './AccountDAODatabase'
 import { MailerGateway } from './MailerGateway'
 import { AccountDAO } from './AccountDAO'
+import { Account } from './Account'
 
 export class AccountService {
   cpfValidator: CpfValidator
@@ -14,24 +14,25 @@ export class AccountService {
   }
 
   async signup(input: any) {
-    input.accountId = crypto.randomUUID()
-    input.verificationCode = crypto.randomUUID()
-    input.date = new Date()
+    const account = Account.create(
+      input.name,
+      input.email,
+      input.cpf,
+      input.isPassenger,
+      input.isDriver,
+      input.carPlate,
+    )
     const existingAccount = await this.accountDAO.getByEmail(input.email)
     if (existingAccount) throw new Error('Account already exists')
-    if (!input.name.match(/[a-zA-Z] [a-zA-Z]+/)) throw new Error('Invalid name')
-    if (!input.email.match(/^(.+)@(.+)$/)) throw new Error('Invalid email')
-    if (!this.cpfValidator.validate(input.cpf)) throw new Error('Invalid cpf')
-    if (input.isDriver && !input.carPlate.match(/[A-Z]{3}[0-9]{4}/))
-      throw new Error('Invalid plate')
-    await this.accountDAO.save(input)
+
+    await this.accountDAO.save(account)
     await this.mailerGateway.send(
-      input.email,
+      account.email,
       'Verification',
-      `Please verify your code at first login ${input.verificationCode}`,
+      `Please verify your code at first login ${account.verificationCode}`,
     )
     return {
-      accountId: input.accountId,
+      accountId: account.accountId,
     }
   }
 
