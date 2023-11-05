@@ -131,12 +131,27 @@
 ##### Quando você separa os dados do comportamento, a classe fica apenas com os dados, se tornando anêmica
 ##### Transaction Script trabalha com domínio anêmico
 #### O Domain Model liga com objetos que comtém dados e comportamentos
-## Use Case
-### É uma intenção dentro do sistema, todo comportamento que é executado é um use case
-### Realizam a orquestração das entidades e dos recursos externos
-### Usar Screaming Architecture(Arquitetura gritante, explicita) para criar os use cases
-### Não usar para CRUDs
 
+### Application Bussines Rules (Use Cases)
+#### É uma intenção dentro do sistema, todo comportamento que é executado é um use case
+#### Realizam a orquestração das entidades e dos recursos externos
+#### Usar Screaming Architecture(Arquitetura gritante, explicita) para criar os use cases
+#### Não usar para CRUDs
+#### Fornece portas para que camdas superiores o supra de recursos que ele precisa conhecer
+##### Ex: Use case RequestRide, interface RequestRideDAO, irá conter a assinatura das chamadas que o use case fará uso, é o ISP do SOLID
+
+### Interface Adapters
+#### Fazem a ponte entre s casos de uso e os recursos externos
+#### Requisição HTTTP chegando
+#### Acesso ao banco de dados
+#### Integração com uma API externa(chamada)
+#### Escrita e leitura no sistema de arquivos(disco)
+#### Conversão de dados específicos como CSV e PDF
+#### Use Case não conhece Interface Adapters
+
+### Frameworks and Drivers
+#### Nível mais baixo de abstração
+#### É a interação com a tecnologia, componentes que realizam a conexão com DB, requisições HTTP, interação com o sistema de arquivo ou recursos do SO
 
 # Static Factory Method do Livro Effective Java
 ## Você foge do teu construtor e cria instancias através de funções fábricas estáticas
