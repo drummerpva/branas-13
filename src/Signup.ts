@@ -1,5 +1,4 @@
 import { CpfValidator } from './CpfValidator'
-import { AccountDAODatabase } from './AccountDAODatabase'
 import { MailerGateway } from './MailerGateway'
 import { AccountDAO } from './AccountDAO'
 import { Account } from './Account'
@@ -16,7 +15,7 @@ export class Signup {
   cpfValidator: CpfValidator
   mailerGateway: MailerGateway
 
-  constructor(readonly accountDAO: AccountDAO = new AccountDAODatabase()) {
+  constructor(readonly accountDAO: AccountDAO) {
     this.cpfValidator = new CpfValidator()
     this.mailerGateway = new MailerGateway()
   }

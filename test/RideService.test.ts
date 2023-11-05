@@ -1,18 +1,32 @@
-import { test, expect, beforeAll } from 'vitest'
+import { test, expect, beforeAll, afterAll } from 'vitest'
 import { RequestRide } from '../src/RequestRide'
 import { GetRide } from '../src/GetRide'
 import { AcceptRide } from '../src/AcceptRide'
 import { Signup } from '../src/Signup'
+import { MysqlAdpter } from '../src/MysqlAdapter'
+import { AccountDAODatabase } from '../src/AccountDAODatabase'
+import { AccountDAO } from '../src/AccountDAO'
+import { RideDAO } from '../src/RideDAO'
+import { RideDAODatabase } from '../src/RideDAODatabase'
 
 let requestRide: RequestRide
 let getRide: GetRide
 let acceptRide: AcceptRide
 let signup: Signup
+let mysqlAdapter: MysqlAdpter
+let accountDAO: AccountDAO
+let rideDAO: RideDAO
 beforeAll(() => {
-  requestRide = new RequestRide()
-  getRide = new GetRide()
-  acceptRide = new AcceptRide()
-  signup = new Signup()
+  mysqlAdapter = new MysqlAdpter()
+  rideDAO = new RideDAODatabase(mysqlAdapter)
+  accountDAO = new AccountDAODatabase(mysqlAdapter)
+  requestRide = new RequestRide(rideDAO, accountDAO)
+  getRide = new GetRide(rideDAO)
+  acceptRide = new AcceptRide(rideDAO, accountDAO)
+  signup = new Signup(accountDAO)
+})
+afterAll(async () => {
+  await mysqlAdapter.close()
 })
 
 test('Deve solicitar uma corrida e receber a rideId', async () => {

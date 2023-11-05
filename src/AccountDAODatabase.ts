@@ -1,12 +1,11 @@
-import mysql from 'mysql2/promise'
 import { AccountDAO } from './AccountDAO'
 import { Account } from './Account'
+import { Connection } from './Connection'
 export class AccountDAODatabase implements AccountDAO {
+  constructor(readonly connection: Connection) {}
+
   async save(account: Account) {
-    const connection = await mysql.createConnection(
-      'mysql://root:root@localhost:3306/branas13',
-    )
-    await connection.query(
+    await this.connection.query(
       'insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver, date, is_verified, verification_code) values (?,?,?,?,?,?,?,?,?,?)',
       [
         account.accountId,
@@ -21,18 +20,13 @@ export class AccountDAODatabase implements AccountDAO {
         account.verificationCode,
       ],
     )
-    connection.destroy()
   }
 
   async getByEmail(email: string) {
-    const connection = await mysql.createConnection(
-      'mysql://root:root@localhost:3306/branas13',
-    )
-    const [[accountData]] = (await connection.query(
+    const [accountData] = await this.connection.query(
       'select * from account where email = ?',
       [email],
-    )) as any[]
-    connection.destroy()
+    )
     if (!accountData) return
     return Account.restore(
       accountData.account_id,
@@ -48,14 +42,10 @@ export class AccountDAODatabase implements AccountDAO {
   }
 
   async getById(accountId: string) {
-    const connection = await mysql.createConnection(
-      'mysql://root:root@localhost:3306/branas13',
-    )
-    const [[accountData]] = (await connection.query(
+    const [accountData] = await this.connection.query(
       'select * from account where account_id = ?',
       [accountId],
-    )) as any[]
-    connection.destroy()
+    )
     if (!accountData) return
     return Account.restore(
       accountData.account_id,

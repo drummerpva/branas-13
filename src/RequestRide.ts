@@ -1,7 +1,5 @@
 import { RideDAO } from './RideDAO'
-import { RideDAODatabase } from './RideDAODatabase'
 import { AccountDAO } from './AccountDAO'
-import { AccountDAODatabase } from './AccountDAODatabase'
 import { Ride } from './Ride'
 type Input = {
   passengerId: string
@@ -21,8 +19,8 @@ type Output = {
 
 export class RequestRide {
   constructor(
-    readonly rideDAO: RideDAO = new RideDAODatabase(),
-    readonly accountDAO: AccountDAO = new AccountDAODatabase(),
+    readonly rideDAO: RideDAO,
+    readonly accountDAO: AccountDAO,
   ) {}
 
   async execute(input: Input): Promise<Output> {

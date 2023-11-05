@@ -1,4 +1,4 @@
-import { test, expect, beforeAll } from 'vitest'
+import { test, expect, beforeAll, afterAll } from 'vitest'
 import sinon from 'sinon'
 import { AccountDAODatabase } from '../src/AccountDAODatabase'
 import { MailerGateway } from '../src/MailerGateway'
@@ -6,12 +6,22 @@ import { AccountDAOMemory } from '../src/AccountDAOMemory'
 import { Account } from '../src/Account'
 import { Signup } from '../src/Signup'
 import { GetAccount } from '../src/GetAccount'
+import { Connection } from '../src/Connection'
+import { MysqlAdpter } from '../src/MysqlAdapter'
+import { AccountDAO } from '../src/AccountDAO'
 
 let signup: Signup
 let getAccount: GetAccount
+let connection: Connection
+let accountDAO: AccountDAO
 beforeAll(() => {
-  signup = new Signup()
-  getAccount = new GetAccount()
+  connection = new MysqlAdpter()
+  accountDAO = new AccountDAODatabase(connection)
+  signup = new Signup(accountDAO)
+  getAccount = new GetAccount(accountDAO)
+})
+afterAll(async () => {
+  await connection.close()
 })
 
 test('Deve criar um passageiro', async function () {

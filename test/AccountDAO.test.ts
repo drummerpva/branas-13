@@ -1,9 +1,21 @@
-import { test, expect } from 'vitest'
+import { test, expect, beforeAll, afterAll } from 'vitest'
 import { AccountDAODatabase } from '../src/AccountDAODatabase'
 import { Account } from '../src/Account'
+import { AccountDAO } from '../src/AccountDAO'
+import { Connection } from '../src/Connection'
+import { MysqlAdpter } from '../src/MysqlAdapter'
+
+let accountDAO: AccountDAO
+let connection: Connection
+beforeAll(() => {
+  connection = new MysqlAdpter()
+  accountDAO = new AccountDAODatabase(connection)
+})
+afterAll(async () => {
+  await connection.close()
+})
 
 test('Deve criar um registro na tabela account e consultar por email', async () => {
-  const accountDAO = new AccountDAODatabase()
   const account = Account.create(
     'John Doe',
     `john.doe${Math.random()}@gmail.com`,
@@ -23,7 +35,6 @@ test('Deve criar um registro na tabela account e consultar por email', async () 
   expect(savedAccount?.verificationCode).toBe(account.verificationCode)
 })
 test('Deve criar um registro na tabela account e consultar por account_id', async () => {
-  const accountDAO = new AccountDAODatabase()
   const account = Account.create(
     'John Doe',
     `john.doe${Math.random()}@gmail.com`,

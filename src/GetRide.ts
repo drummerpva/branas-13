@@ -1,7 +1,6 @@
 import { RideDAO } from './RideDAO'
-import { RideDAODatabase } from './RideDAODatabase'
 export class GetRide {
-  constructor(readonly rideDAO: RideDAO = new RideDAODatabase()) {}
+  constructor(readonly rideDAO: RideDAO) {}
 
   async execute(rideId: string) {
     const ride = await this.rideDAO.getById(rideId)
