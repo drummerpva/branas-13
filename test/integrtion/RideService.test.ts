@@ -8,10 +8,12 @@ import { AccountDAODatabase } from '../../src/infra/repository/AccountDAODatabas
 import { AccountDAO } from '../../src/application/repository/AccountDAO'
 import { RideDAO } from '../../src/application/repository/RideDAO'
 import { RideDAODatabase } from '../../src/infra/repository/RideDAODatabase'
+import { StartRide } from '../../src/application/usecase/StartRide'
 
 let requestRide: RequestRide
 let getRide: GetRide
 let acceptRide: AcceptRide
+let startRide: StartRide
 let signup: Signup
 let mysqlAdapter: MysqlAdpter
 let accountDAO: AccountDAO
@@ -23,6 +25,7 @@ beforeAll(() => {
   requestRide = new RequestRide(rideDAO, accountDAO)
   getRide = new GetRide(rideDAO)
   acceptRide = new AcceptRide(rideDAO, accountDAO)
+  startRide = new StartRide(rideDAO)
   signup = new Signup(accountDAO)
 })
 afterAll(async () => {
@@ -305,4 +308,45 @@ test('Não deve aceitar uma corrida caso o motorista já tenha outra corrida com
   await expect(() => acceptRide.execute(inputAcceptRide2)).rejects.toThrow(
     'Driver already has an active ride',
   )
+})
+test('Deve solicitar e consultar uma corrida, aceitar uma corrida e iniciar a corrida', async () => {
+  const inputSignupPassenger: any = {
+    name: 'John Doe',
+    email: `john.doe${Math.random()}@gmail.com`,
+    cpf: '95818705552',
+    isPassenger: true,
+  }
+  const outputSignupPassenger = await signup.execute(inputSignupPassenger)
+  const inputRequestRide: any = {
+    passengerId: outputSignupPassenger.accountId,
+    from: {
+      lat: -27.584905257808835,
+      long: -48.545022195325124,
+    },
+    to: {
+      lat: -27.496887588317275,
+      long: -48.522234807851476,
+    },
+  }
+  const outputRequestRide = await requestRide.execute(inputRequestRide)
+  const inputSignupDriver: any = {
+    name: 'John Doe',
+    email: `john.doe${Math.random()}@gmail.com`,
+    cpf: '95818705552',
+    carPlate: 'ABC1234',
+    isDriver: true,
+  }
+  const outputSignupDriver = await signup.execute(inputSignupDriver)
+  const inputAcceptRide: any = {
+    rideId: outputRequestRide.rideId,
+    driverId: outputSignupDriver.accountId,
+  }
+  await acceptRide.execute(inputAcceptRide)
+  const inputStatRide = {
+    rideId: outputRequestRide.rideId,
+  }
+  await startRide.execute(inputStatRide)
+  const outputGetRide = await getRide.execute(outputRequestRide.rideId)
+  expect(outputGetRide.getStatus()).toBe('in_progress')
+  expect(outputGetRide.driverId).toBe(outputSignupDriver.accountId)
 })
