@@ -1,6 +1,6 @@
-import { AccountDAO } from './AccountDAO'
-import { Account } from './Account'
-import { Connection } from './Connection'
+import { AccountDAO } from '../../application/repository/AccountDAO'
+import { Account } from '../../domain/Account'
+import { Connection } from '../databaase/Connection'
 export class AccountDAODatabase implements AccountDAO {
   constructor(readonly connection: Connection) {}
 

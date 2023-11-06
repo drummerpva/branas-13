@@ -1,5 +1,5 @@
-import { RideDAO } from './RideDAO'
-import { AccountDAO } from './AccountDAO'
+import { RideDAO } from '../repository/RideDAO'
+import { AccountDAO } from '../repository/AccountDAO'
 
 type Input = {
   driverId: string

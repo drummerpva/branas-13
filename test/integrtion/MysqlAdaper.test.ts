@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest'
-import { MysqlAdpter } from '../src/MysqlAdapter'
+import { MysqlAdpter } from '../../src/infra/databaase/MysqlAdapter'
 
 test('Deve fazer uma query no banco de dados', async () => {
   const mysqlAdapter = new MysqlAdpter()

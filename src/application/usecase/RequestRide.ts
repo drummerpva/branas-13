@@ -1,6 +1,6 @@
-import { RideDAO } from './RideDAO'
-import { AccountDAO } from './AccountDAO'
-import { Ride } from './Ride'
+import { RideDAO } from '../repository/RideDAO'
+import { AccountDAO } from '../repository/AccountDAO'
+import { Ride } from '../../domain/Ride'
 type Input = {
   passengerId: string
   from: {

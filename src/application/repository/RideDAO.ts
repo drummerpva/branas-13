@@ -1,4 +1,4 @@
-import { Ride } from './Ride'
+import { Ride } from '../../domain/Ride'
 
 export interface RideDAO {
   save(ride: Ride): Promise<void>

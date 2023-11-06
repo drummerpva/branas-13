@@ -1,9 +1,9 @@
 import { test, expect, beforeAll, afterAll } from 'vitest'
-import { AccountDAODatabase } from '../src/AccountDAODatabase'
-import { Account } from '../src/Account'
-import { AccountDAO } from '../src/AccountDAO'
-import { Connection } from '../src/Connection'
-import { MysqlAdpter } from '../src/MysqlAdapter'
+import { AccountDAODatabase } from '../../src/infra/repository/AccountDAODatabase'
+import { Account } from '../../src/domain/Account'
+import { AccountDAO } from '../../src/application/repository/AccountDAO'
+import { Connection } from '../../src/infra/databaase/Connection'
+import { MysqlAdpter } from '../../src/infra/databaase/MysqlAdapter'
 
 let accountDAO: AccountDAO
 let connection: Connection

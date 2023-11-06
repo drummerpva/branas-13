@@ -153,6 +153,12 @@
 #### Nível mais baixo de abstração
 #### É a interação com a tecnologia, componentes que realizam a conexão com DB, requisições HTTP, interação com o sistema de arquivo ou recursos do SO
 
+## 4 camadas? 
+### Nem sempre, normalmente 3, mas se quiser separar de frameworks and drivers dos interface adapters terá 4
+
+## Composition Root
+### Main, onde será composto o grafo de dependências
+
 # Static Factory Method do Livro Effective Java
 ## Você foge do teu construtor e cria instancias através de funções fábricas estáticas
 ## Permite separar instanciação da re-hidratação

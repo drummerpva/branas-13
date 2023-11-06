@@ -1,7 +1,7 @@
-import { CpfValidator } from './CpfValidator'
-import { MailerGateway } from './MailerGateway'
-import { AccountDAO } from './AccountDAO'
-import { Account } from './Account'
+import { CpfValidator } from '../../domain/CpfValidator'
+import { MailerGateway } from '../../infra/gateway/MailerGateway'
+import { AccountDAO } from '../repository/AccountDAO'
+import { Account } from '../../domain/Account'
 type Input = {
   name: string
   email: string

@@ -1,9 +1,9 @@
-import { Signup } from './Signup'
-import { GetAccount } from './GetAccount'
-import { MysqlAdpter } from './MysqlAdapter'
-import { AccountDAODatabase } from './AccountDAODatabase'
-import { ExpressAdapter } from './ExpressAdapter'
-import { MainController } from './MainController'
+import { Signup } from './application/usecase/Signup'
+import { GetAccount } from './application/usecase/GetAccount'
+import { MysqlAdpter } from './infra/databaase/MysqlAdapter'
+import { ExpressAdapter } from './infra/http/ExpressAdapter'
+import { MainController } from './infra/controller/MainController'
+import { AccountDAODatabase } from './infra/repository/AccountDAODatabase'
 
 const connection = new MysqlAdpter()
 const acountDAO = new AccountDAODatabase(connection)

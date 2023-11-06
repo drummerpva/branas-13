@@ -1,14 +1,14 @@
 import { test, expect, beforeAll, afterAll } from 'vitest'
 import sinon from 'sinon'
-import { AccountDAODatabase } from '../src/AccountDAODatabase'
-import { MailerGateway } from '../src/MailerGateway'
-import { AccountDAOMemory } from '../src/AccountDAOMemory'
-import { Account } from '../src/Account'
-import { Signup } from '../src/Signup'
-import { GetAccount } from '../src/GetAccount'
-import { Connection } from '../src/Connection'
-import { MysqlAdpter } from '../src/MysqlAdapter'
-import { AccountDAO } from '../src/AccountDAO'
+import { AccountDAODatabase } from '../../src/infra/repository/AccountDAODatabase'
+import { MailerGateway } from '../../src/infra/gateway/MailerGateway'
+import { AccountDAOMemory } from '../../src/infra/repository/AccountDAOMemory'
+import { Account } from '../../src/domain/Account'
+import { Signup } from '../../src/application/usecase/Signup'
+import { GetAccount } from '../../src/application/usecase/GetAccount'
+import { Connection } from '../../src/infra/databaase/Connection'
+import { MysqlAdpter } from '../../src/infra/databaase/MysqlAdapter'
+import { AccountDAO } from '../../src/application/repository/AccountDAO'
 
 let signup: Signup
 let getAccount: GetAccount

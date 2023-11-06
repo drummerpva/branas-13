@@ -1,6 +1,6 @@
-import { GetAccount } from './GetAccount'
-import { HttpServer } from './HttpServer'
-import { Signup } from './Signup'
+import { GetAccount } from '../../application/usecase/GetAccount'
+import { HttpServer } from '../http/HttpServer'
+import { Signup } from '../../application/usecase/Signup'
 
 export class MainController {
   constructor(

@@ -1,13 +1,13 @@
 import { test, expect, beforeAll, afterAll } from 'vitest'
-import { RequestRide } from '../src/RequestRide'
-import { GetRide } from '../src/GetRide'
-import { AcceptRide } from '../src/AcceptRide'
-import { Signup } from '../src/Signup'
-import { MysqlAdpter } from '../src/MysqlAdapter'
-import { AccountDAODatabase } from '../src/AccountDAODatabase'
-import { AccountDAO } from '../src/AccountDAO'
-import { RideDAO } from '../src/RideDAO'
-import { RideDAODatabase } from '../src/RideDAODatabase'
+import { RequestRide } from '../../src/application/usecase/RequestRide'
+import { GetRide } from '../../src/application/usecase/GetRide'
+import { AcceptRide } from '../../src/application/usecase/AcceptRide'
+import { Signup } from '../../src/application/usecase/Signup'
+import { MysqlAdpter } from '../../src/infra/databaase/MysqlAdapter'
+import { AccountDAODatabase } from '../../src/infra/repository/AccountDAODatabase'
+import { AccountDAO } from '../../src/application/repository/AccountDAO'
+import { RideDAO } from '../../src/application/repository/RideDAO'
+import { RideDAODatabase } from '../../src/infra/repository/RideDAODatabase'
 
 let requestRide: RequestRide
 let getRide: GetRide
