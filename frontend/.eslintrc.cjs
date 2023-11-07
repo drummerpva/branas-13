@@ -10,5 +10,7 @@ module.exports = {
   // parser: '@typescript-eslint/parser',
   // plugins: ['react-refresh'],
   extends: ['@rocketseat/eslint-config/react'],
-  rules: {},
+  rules: {
+    '@typescript-eslint/no-explicit-any': 'off',
+  },
 }
