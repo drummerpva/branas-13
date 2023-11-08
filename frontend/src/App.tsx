@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { useCallback, useState, ChangeEvent } from 'react'
 
 type SignupForm = {
@@ -10,7 +10,13 @@ type SignupForm = {
 }
 
 function App() {
-  const [form, setForm] = useState<SignupForm>({} as SignupForm)
+  const [form, setForm] = useState<SignupForm>({
+    name: '',
+    email: '',
+    cpf: '',
+    isPassenger: false,
+    isDriver: false,
+  })
   const [accountId, setAccountId] = useState()
   const [error, setError] = useState()
   const handleChange = useCallback(
@@ -27,10 +33,10 @@ function App() {
       const output = response.data
       setAccountId(output.accountId)
     } catch (error: any) {
-      setError(error.reponse?.data.error)
+      const axiosError = error as AxiosError<any>
+      setError(axiosError.response?.data.error)
     }
   }, [form])
-  console.log(error)
   return (
     <div>
       <h1 className="signup-title">Signup</h1>
@@ -63,8 +69,8 @@ function App() {
       <button type="button" className="signup-submit" onClick={signup}>
         Criar passageiro
       </button>
-      {!!error && <span className="signup-error">{error}</span>}
       {!!accountId && <span className="signup-account-id">{accountId}</span>}
+      {!!error && <span className="signup-error">{error}</span>}
     </div>
   )
 }
