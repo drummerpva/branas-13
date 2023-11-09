@@ -1,5 +1,5 @@
-import axios, { AxiosError } from 'axios'
 import { useCallback, useState, ChangeEvent } from 'react'
+import { useDependency } from './hooks/useDependency'
 
 type SignupForm = {
   name: string
@@ -10,6 +10,7 @@ type SignupForm = {
 }
 
 function App() {
+  const { rideGateway } = useDependency()
   const [form, setForm] = useState<SignupForm>({
     name: '',
     email: '',
@@ -29,14 +30,12 @@ function App() {
 
   const signup = useCallback(async () => {
     try {
-      const response = await axios.post('http://localhost:3000/signup', form)
-      const output = response.data
+      const output = await rideGateway.signup(form)
       setAccountId(output.accountId)
     } catch (error: any) {
-      const axiosError = error as AxiosError<any>
-      setError(axiosError.response?.data.error)
+      setError(error.message)
     }
-  }, [form])
+  }, [form, rideGateway])
   return (
     <div>
       <h1 className="signup-title">Signup</h1>
