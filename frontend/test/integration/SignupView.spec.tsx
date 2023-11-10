@@ -1,12 +1,12 @@
 import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import SignupView from '../src/view/SignupView'
+import SignupView from '../../src/view/SignupView'
 import { setTimeout as sleep } from 'node:timers/promises'
-import { RideGateway } from '../src/infra/gateway/RideGateway'
-import { RideGatewayHttp } from '../src/infra/gateway/RideGatewayHttp'
-import { DependencyProvider } from '../src/hooks/useDependency'
-import { HttpClient } from '../src/infra/http/HttpClient'
-import { FetchAdapter } from '../src/infra/http/FetchAdapter'
+import { RideGateway } from '../../src/infra/gateway/RideGateway'
+import { RideGatewayHttp } from '../../src/infra/gateway/RideGatewayHttp'
+import { DependencyProvider } from '../../src/hooks/useDependency'
+import { HttpClient } from '../../src/infra/http/HttpClient'
+import { FetchAdapter } from '../../src/infra/http/FetchAdapter'
 
 let httpClient: HttpClient
 let rideGateway: RideGateway
