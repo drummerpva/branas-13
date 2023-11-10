@@ -1,12 +1,11 @@
 import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import App from '../src/App'
+import SignupView from '../src/view/SignupView'
 import { setTimeout as sleep } from 'node:timers/promises'
 import { RideGateway } from '../src/infra/gateway/RideGateway'
 import { RideGatewayHttp } from '../src/infra/gateway/RideGatewayHttp'
 import { DependencyProvider } from '../src/hooks/useDependency'
 import { HttpClient } from '../src/infra/http/HttpClient'
-import { AxiosAdapter } from '../src/infra/http/AxiosAdapter'
 import { FetchAdapter } from '../src/infra/http/FetchAdapter'
 
 let httpClient: HttpClient
@@ -18,7 +17,7 @@ beforeAll(() => {
   rideGateway = new RideGatewayHttp(httpClient)
   sut = (
     <DependencyProvider dependency={{ rideGateway }}>
-      <App />
+      <SignupView />
     </DependencyProvider>
   )
 })
@@ -120,7 +119,7 @@ test('Deve criar um passageiro usando fake', async () => {
   }
   const { container } = render(
     <DependencyProvider dependency={{ rideGateway: rideGatewayFake }}>
-      <App />
+      <SignupView />
     </DependencyProvider>,
   )
   expect(container.querySelector('.signup-title')?.textContent).toBe('Signup')
@@ -147,7 +146,7 @@ test('Não deve criar um passageiro com nome inválido usando fake', async () =>
   }
   const { container } = render(
     <DependencyProvider dependency={{ rideGateway: rideGatewayFake }}>
-      <App />
+      <SignupView />
     </DependencyProvider>,
   )
   expect(container.querySelector('.signup-title')?.textContent).toBe('Signup')
