@@ -165,3 +165,41 @@ test('Não deve criar um passageiro com nome inválido usando fake', async () =>
   expect(element).toBeInTheDocument()
   expect(element.textContent).toBe('Invalid name')
 })
+test('Deve criar um motorista', async () => {
+  const { container } = render(sut)
+  expect(container.querySelector('.signup-title')?.textContent).toBe('Signup')
+  await userEvent.type(container.querySelector('.signup-name')!, 'John Doe')
+  await userEvent.type(
+    container.querySelector('.signup-email')!,
+    `John.doe${Math.random()}@gmail.com`,
+  )
+  await userEvent.type(container.querySelector('.signup-cpf')!, '98765432100')
+  await userEvent.type(container.querySelector('.signup-car-plate')!, 'AAA1234')
+  await userEvent.click(container.querySelector('.signup-is-driver')!)
+  await userEvent.click(container.querySelector('.signup-submit')!)
+  const element = await screen.findByText((_content, element) => {
+    if (!element) return false
+    return element.classList.contains('signup-account-id')
+  })
+  expect(element).toBeInTheDocument()
+  expect(element.textContent).toHaveLength(36)
+})
+test('Não deve criar um motorista se a placa estiver inválida', async () => {
+  const { container } = render(sut)
+  expect(container.querySelector('.signup-title')?.textContent).toBe('Signup')
+  await userEvent.type(container.querySelector('.signup-name')!, 'John Doe')
+  await userEvent.type(
+    container.querySelector('.signup-email')!,
+    `John.doe${Math.random()}@gmail.com`,
+  )
+  await userEvent.type(container.querySelector('.signup-cpf')!, '98765432100')
+  await userEvent.type(container.querySelector('.signup-car-plate')!, 'A1')
+  await userEvent.click(container.querySelector('.signup-is-driver')!)
+  await userEvent.click(container.querySelector('.signup-submit')!)
+  const element = await screen.findByText((_content, element) => {
+    if (!element) return false
+    return element.classList.contains('signup-error')
+  })
+  expect(element).toBeInTheDocument()
+  expect(element.textContent).toBe('Invalid plate')
+})

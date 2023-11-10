@@ -74,11 +74,25 @@ function SignupView() {
         onChange={handleChange('cpf')}
       />
       <input
+        type="text"
+        className="signup-car-plate"
+        value={form.carPlate}
+        onChange={handleChange('carPlate')}
+      />
+      <input
         type="checkbox"
         className="signup-is-passenger"
         checked={form.isPassenger}
         onChange={({ target: { checked } }) =>
           setForm((old) => ({ ...old, isPassenger: checked }))
+        }
+      />
+      <input
+        type="checkbox"
+        className="signup-is-driver"
+        checked={form.isDriver}
+        onChange={({ target: { checked } }) =>
+          setForm((old) => ({ ...old, isDriver: checked }))
         }
       />
       <button type="button" className="signup-submit" onClick={signup}>
