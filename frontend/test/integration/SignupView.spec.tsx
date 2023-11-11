@@ -116,6 +116,7 @@ test('Não deve criar um passageiro se o email estiver duplicado', async () => {
 test('Deve criar um passageiro usando fake', async () => {
   const rideGatewayFake: RideGateway = {
     signup: async () => ({ accountId: '954cfde4-94dc-4955-8f71-9441eda4f24f' }),
+    requestRide: vi.fn(),
   }
   const { container } = render(
     <DependencyProvider dependency={{ rideGateway: rideGatewayFake }}>
@@ -143,6 +144,7 @@ test('Não deve criar um passageiro com nome inválido usando fake', async () =>
     signup: async () => {
       throw new Error('Invalid name')
     },
+    requestRide: vi.fn(),
   }
   const { container } = render(
     <DependencyProvider dependency={{ rideGateway: rideGatewayFake }}>
