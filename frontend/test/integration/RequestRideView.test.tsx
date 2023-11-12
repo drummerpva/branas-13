@@ -8,6 +8,7 @@ import { DependencyProvider } from '../../src/hooks/useDependency'
 import { HttpClient } from '../../src/infra/http/HttpClient'
 import { FetchAdapter } from '../../src/infra/http/FetchAdapter'
 import { RequestRideView } from '../../src/view/RequestRideView'
+import { GetRideView } from '../../src/view/GetRideVIew'
 
 let httpClient: HttpClient
 let rideGateway: RideGateway
@@ -47,12 +48,12 @@ export const createUser = async () => {
 }
 
 test('Deve solicitar uma corrida', async () => {
-  const accountId = await createUser()
-  if (!accountId) throw new Error('accountId is undefined')
+  const passengerId = await createUser()
+  if (!passengerId) throw new Error('accountId is undefined')
   const { container } = render(sut)
   await userEvent.type(
     container.querySelector('.request-account-id')!,
-    accountId,
+    passengerId,
   )
   await userEvent.type(
     container.querySelector('.request-from-lat')!,
@@ -77,6 +78,34 @@ test('Deve solicitar uma corrida', async () => {
   })
   expect(element).toBeInTheDocument()
   const rideId = element.textContent
-  console.log({ rideId })
   expect(rideId).toHaveLength(36)
+  const { container: containerGetRide } = render(
+    <DependencyProvider dependency={{ rideGateway }}>
+      <GetRideView />
+    </DependencyProvider>,
+  )
+  await userEvent.type(
+    containerGetRide.querySelector('.get-ride-ride-id')!,
+    rideId!,
+  )
+  await userEvent.click(containerGetRide.querySelector('.get-ride-submit')!)
+  const passengerIdElement = await screen.findByText((_content, element) => {
+    if (!element) return false
+    return element.classList.contains('get-ride-passenger-id')
+  })
+  expect(passengerIdElement).toBeInTheDocument()
+  expect(passengerIdElement?.textContent).toBe(passengerId)
+  expect(containerGetRide.querySelector('.get-ride-status')?.textContent).toBe(
+    'requested',
+  )
+  expect(
+    containerGetRide.querySelector('.get-ride-passenger-name')?.textContent,
+  ).toBe('John Doe')
+  expect(
+    containerGetRide.querySelector('.get-ride-passenger-email')?.textContent
+      ?.length,
+  ).toBeGreaterThan(4)
+  expect(
+    containerGetRide.querySelector('.get-ride-passenger-cpf')?.textContent,
+  ).toBe('98765432100')
 })

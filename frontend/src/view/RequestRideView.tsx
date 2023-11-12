@@ -44,7 +44,7 @@ export const RequestRideView = () => {
   }, [form, rideGateway])
   return (
     <div>
-      <h1 className="signup-title">Signup</h1>
+      <h1 className="request-title">Request Ride</h1>
       <input
         type="text"
         className="request-account-id"

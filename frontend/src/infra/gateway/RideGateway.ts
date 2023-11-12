@@ -5,4 +5,5 @@ export interface RideGateway {
   // signup(input: any): Promise<any>
   signup(input: Account): Promise<any>
   requestRide(input: RequestRide): Promise<any>
+  getRide(rideId: string): Promise<any>
 }

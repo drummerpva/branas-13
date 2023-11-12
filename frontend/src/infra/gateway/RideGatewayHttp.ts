@@ -20,4 +20,11 @@ export class RideGatewayHttp implements RideGateway {
     )
     return output
   }
+
+  async getRide(rideId: string): Promise<any> {
+    const output = await this.httpClient.get(
+      `http://localhost:3000/rides/${rideId}`,
+    )
+    return output
+  }
 }
