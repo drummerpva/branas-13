@@ -1,4 +1,4 @@
-import { useState, useCallback, ChangeEvent } from 'react'
+import { useState, useCallback, ChangeEvent, useEffect } from 'react'
 import { useDependency } from '../hooks/useDependency'
 import { RequestRide } from '../entity/RequestRide'
 
@@ -11,7 +11,7 @@ type RequestRideForm = {
 }
 
 export const RequestRideView = () => {
-  const { rideGateway } = useDependency()
+  const { rideGateway, geoLocationGateway } = useDependency()
   const [form, setForm] = useState<RequestRideForm>({
     accountId: '',
     fromLat: '',
@@ -28,6 +28,20 @@ export const RequestRideView = () => {
       },
     [],
   )
+
+  useEffect(() => {
+    const onMount = async () => {
+      const geolocation = await geoLocationGateway.getGeolocation()
+      console.log(geolocation)
+      setForm((old) => ({
+        ...old,
+        fromLat: String(geolocation.lat),
+        fromLong: String(geolocation.long),
+      }))
+    }
+    window.addEventListener('load', onMount)
+    return () => window.removeEventListener('load', onMount)
+  }, [geoLocationGateway])
 
   const signup = useCallback(async () => {
     const requestRide = new RequestRide(

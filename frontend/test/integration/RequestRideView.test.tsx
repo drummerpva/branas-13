@@ -9,21 +9,29 @@ import { HttpClient } from '../../src/infra/http/HttpClient'
 import { FetchAdapter } from '../../src/infra/http/FetchAdapter'
 import { RequestRideView } from '../../src/view/RequestRideView'
 import { GetRideView } from '../../src/view/GetRideVIew'
+import { GeolocationGateway } from '../../src/infra/gateway/GeolocatioGateway'
 
 let httpClient: HttpClient
 let rideGateway: RideGateway
+let geoLocationGateway: GeolocationGateway
 let createAccount: JSX.Element
 let sut: JSX.Element
 beforeAll(() => {
   httpClient = new FetchAdapter()
   rideGateway = new RideGatewayHttp(httpClient)
+  geoLocationGateway = {
+    getGeolocation: async () => ({
+      lat: -27.584905257808835,
+      long: -48.545022195325124,
+    }),
+  }
   createAccount = (
     <DependencyProvider dependency={{ rideGateway }}>
       <SignupView />
     </DependencyProvider>
   )
   sut = (
-    <DependencyProvider dependency={{ rideGateway }}>
+    <DependencyProvider dependency={{ rideGateway, geoLocationGateway }}>
       <RequestRideView />
     </DependencyProvider>
   )
@@ -54,14 +62,6 @@ test('Deve solicitar uma corrida', async () => {
   await userEvent.type(
     container.querySelector('.request-account-id')!,
     passengerId,
-  )
-  await userEvent.type(
-    container.querySelector('.request-from-lat')!,
-    '-27.584905257808835',
-  )
-  await userEvent.type(
-    container.querySelector('.request-from-long')!,
-    '-48.545022195325124',
   )
   await userEvent.type(
     container.querySelector('.request-to-lat')!,

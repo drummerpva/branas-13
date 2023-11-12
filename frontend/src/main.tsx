@@ -6,12 +6,15 @@ import { RideGatewayHttp } from './infra/gateway/RideGatewayHttp.ts'
 import { DependencyProvider } from './hooks/useDependency.tsx'
 // import { AxiosAdapter } from './infra/http/AxiosAdapter.ts'
 import { FetchAdapter } from './infra/http/FetchAdapter.ts'
+import { GeolocationGatewayBrowser } from './infra/gateway/GeolocationGatewayBrowser.ts'
 
 // const httpClient = new AxiosAdapter()
 const httpClient = new FetchAdapter()
 const rideGateway = new RideGatewayHttp(httpClient)
+const geoLocationGateway = new GeolocationGatewayBrowser()
 const dependency = {
   rideGateway,
+  geoLocationGateway,
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
