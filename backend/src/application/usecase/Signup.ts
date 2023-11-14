@@ -1,4 +1,3 @@
-import { CpfValidator } from '../../domain/CpfValidator'
 import { MailerGateway } from '../../infra/gateway/MailerGateway'
 import { AccountDAO } from '../repository/AccountDAO'
 import { Account } from '../../domain/Account'
@@ -12,11 +11,9 @@ type Input = {
 }
 
 export class Signup {
-  cpfValidator: CpfValidator
   mailerGateway: MailerGateway
 
   constructor(readonly accountDAO: AccountDAO) {
-    this.cpfValidator = new CpfValidator()
     this.mailerGateway = new MailerGateway()
   }
 
@@ -34,7 +31,7 @@ export class Signup {
 
     await this.accountDAO.save(account)
     await this.mailerGateway.send(
-      account.email,
+      account.email.getValue(),
       'Verification',
       `Please verify your code at first login ${account.verificationCode}`,
     )

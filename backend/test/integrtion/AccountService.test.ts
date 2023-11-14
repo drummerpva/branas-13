@@ -177,7 +177,29 @@ test('Deve criar um passageiro com Mock', async function () {
 
   const output = await signup.execute(input)
   input.account_id = output.accountId
-  mockAccountDAO.expects('getById').resolves(input)
+  mockAccountDAO.expects('getById').resolves({
+    ...input,
+    cpf: {
+      getValue() {
+        return input.cpf
+      },
+    },
+    email: {
+      getValue() {
+        return input.email
+      },
+    },
+    name: {
+      getValue() {
+        return input.name
+      },
+    },
+    carPlate: {
+      getValue() {
+        return ''
+      },
+    },
+  })
   await getAccount.execute(output.accountId)
   mailerMock.verify()
   sinon.restore()

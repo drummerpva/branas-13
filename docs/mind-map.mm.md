@@ -163,3 +163,55 @@
 ## Você foge do teu construtor e cria instancias através de funções fábricas estáticas
 ## Permite separar instanciação da re-hidratação
 ## Muito útil para traser semântica a criação e ter opção caso a linguagem não tenha sobrecarga de construtor
+
+# DDD(Domain Driven Design)
+## O que é um domínio?
+### O domínio é o problema, em termos de negócio, que precisa ser resolvido independente da tecnologia que será utilizada
+## Nem sempre é fácil extrair o conhecimento relacionado ao domínio
+## Linguagem Ubíqua(Onipresente)
+### Ideal é usar essa mesma linguagem dentro do código
+## Se divide em duas partes
+### Modelagem Estratégica
+#### Context Map
+#### Como subdivido meu domínio
+### Modelagem Tática
+#### Modelo de domínio dentro de um contexto delimitado
+#### Utilizada para construir a camada de domínio
+
+## DDD complementa a camada de Entities do Clean Architecture
+## DDD é considerado um design aplicado a camada de domínio
+## Objetos de domínio
+### Entities
+#### Abstraem regras de negócio independentes
+#### Tem identidade e estado
+#### Pode sofrer mutação ao longo do tempo
+#### Como gerar a identidade?
+##### Manualmente: O próprio usuário pode gerar a identidade da entidade, por exemplo, utilizando o email ou um documento de identificação
+##### Aplicação: A aplicação pode utilizar um algoritmo para gerar a identidade como um gerador de UUID
+##### Banco de dados: O bando de dados por meio de uma sequência ou outro de tipo de registro, centralizando a geração de identidade
+#### Como comparar?
+##### A comaparação entre entities se dá pela identidade(id), sem levar em consideração suas características
+
+### Value Objects
+#### Também contém regras de negócio independentes, no entando são identificados pelo seu valor, sendo imutáveis, ou seja, a mudança implica na sua substituição
+#### Mede, quantifica ou descreve alguma coisa
+#### Se valor é imutável
+#### É substituido quando seu valor mudar
+#### Pode ser comparado pelo valor que representa
+#### Não precisa ter um valor apenas, pode conter um conjunto de valores
+#### Ex:
+##### Code: Representa uma determinada regra de formação de um número
+##### Cpf: Garante qu eo número do documento é válido
+##### Dimension: Abstrai a largura, altura, profundidade e peso de um item
+##### Password: Representa uma senha
+##### Color: Uma cor no formato RGB
+##### Coord: A latitude e longitude
+##### Email: Representa um email
+##### Position: Representa uma posição geográfica no tempo
+##### Segment: Representa duas posiçÕes geográficas no tempo
+#### Substituir por um ou mais primitivos
+##### Uma técnica para identificar um value object é tentar substituí-lo por um tipo primitivo como uma string ou um número
+
+### Domain Services
+### Aggregates
+### Repositories
