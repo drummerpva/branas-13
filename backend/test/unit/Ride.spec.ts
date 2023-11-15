@@ -20,5 +20,5 @@ test('Deve iniciar uma corrida', () => {
 })
 test('Deve lançar erro se corrida não estiver aceita quando for iniciar', () => {
   const ride = Ride.create('', 0, 0, 0, 0)
-  expect(() => ride.start()).toThrow(new Error('Ride is not accepted'))
+  expect(() => ride.start()).toThrow(new Error('Invalid status'))
 })

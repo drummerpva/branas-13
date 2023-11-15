@@ -79,7 +79,7 @@ test('Deve solicitar e consultar uma corrida', async () => {
   }
   const outputRequestRide = await requestRide.execute(inputRequestRide)
   const outputGetRide = await getRide.execute(outputRequestRide.rideId)
-  expect(outputGetRide.getStatus()).toBe('requested')
+  expect(outputGetRide.status).toBe('requested')
   expect(outputGetRide.passengerId).toBe(outputSignup.accountId)
   expect(outputGetRide.date).toBeDefined()
   expect(outputGetRide.fromLat).toBe(inputRequestRide.from.lat)
@@ -121,7 +121,7 @@ test('Deve solicitar e consultar uma corrida e aceitar uma corrida', async () =>
   }
   await acceptRide.execute(inputAcceptRide)
   const outputGetRide = await getRide.execute(outputRequestRide.rideId)
-  expect(outputGetRide.getStatus()).toBe('accepted')
+  expect(outputGetRide.status).toBe('accepted')
   expect(outputGetRide.driverId).toBe(outputSignupDriver.accountId)
 })
 test('Caso uma corrida seja solicitada por uma conta que não seja de passageiro deve lançar erro', async () => {
@@ -245,7 +245,7 @@ test('Não deve aceitar uma corrida que não tem status requested', async () => 
   }
   await acceptRide.execute(inputAcceptRide)
   await expect(() => acceptRide.execute(inputAcceptRide)).rejects.toThrow(
-    'Ride is not requested',
+    'Invalid status',
   )
 })
 test('Não deve aceitar uma corrida caso o motorista já tenha outra corrida com status "accepted" ou "in_progress" lançar erro', async () => {
@@ -347,6 +347,6 @@ test('Deve solicitar e consultar uma corrida, aceitar uma corrida e iniciar a co
   }
   await startRide.execute(inputStatRide)
   const outputGetRide = await getRide.execute(outputRequestRide.rideId)
-  expect(outputGetRide.getStatus()).toBe('in_progress')
+  expect(outputGetRide.status).toBe('in_progress')
   expect(outputGetRide.driverId).toBe(outputSignupDriver.accountId)
 })
