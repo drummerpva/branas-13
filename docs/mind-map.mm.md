@@ -213,5 +213,16 @@
 ##### Uma técnica para identificar um value object é tentar substituí-lo por um tipo primitivo como uma string ou um número
 
 ### Domain Services
+#### Realiza tarefas específicas do domínio, não tendo estado
+#### É indicado quando a operação que você quer executar não pertence a uma entity ou a um value object
+#### Utilize em operações que envolvem múltiplos objetos de domínio
+#### Normalmente quando uma operação afeta múltiplos objetos de domínio, não pertencendop a nenhum deles, ela deve ser descrita em um domain service
+#### Não crie serviços no lugar de entities e value objects, favorecendo um modelo anêmico
+#### Exemplos
+##### DistanceCalculator: pegando daus coordenadas retorna a distância
+##### FareCalculator: Calcula o valor de um segmento da corrida
+##### TokenGenerator: Gera um token de acordo com um email
+##### AccountTransfer: Pega duas Accounts e faz transferência entre elas
+
 ### Aggregates
 ### Repositories
