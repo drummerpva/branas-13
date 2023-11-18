@@ -11,6 +11,7 @@ type Output = {
   toLong: number
   date: Date
   status: string
+  distance: number
   passenger: {
     accountId: string
     name: string
@@ -41,6 +42,7 @@ export class GetRide {
       toLong: ride.to.getLong(),
       date: ride.date,
       status: ride.getStatus(),
+      distance: ride.getDistance(),
       passenger: {
         name: passenger.name.getValue(),
         email: passenger.email.getValue(),

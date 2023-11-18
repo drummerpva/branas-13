@@ -1,4 +1,6 @@
 import { RideDAO } from '../../application/repository/RideDAO'
+import { Coord } from '../../domain/Coord'
+import { Position } from '../../domain/Position'
 import { Ride } from '../../domain/Ride'
 import { Connection } from '../databaase/Connection'
 export class RideDAODatabase implements RideDAO {
@@ -6,7 +8,7 @@ export class RideDAODatabase implements RideDAO {
 
   async save(ride: Ride) {
     await this.connection.query(
-      'insert into ride (ride_id, passenger_id, from_lat, from_long, to_lat, to_long, status, date) values(?,?,?,?,?,?,?,?) ',
+      `insert into ride (ride_id, passenger_id, from_lat, from_long, to_lat, to_long, status, date) values(?,?,?,?,?,?,?,?)`,
       [
         ride.rideId,
         ride.passengerId,
@@ -23,17 +25,30 @@ export class RideDAODatabase implements RideDAO {
   async update(ride: Ride): Promise<void> {
     await this.connection.query(
       /* sql */
-      `update ride set driver_id = ?, status = ? where ride_id = ?`,
-      [ride.driverId, ride.getStatus(), ride.rideId],
+      `update ride set driver_id = ?, status = ?, distance = ? where ride_id = ?`,
+      [ride.driverId, ride.getStatus(), ride.getDistance(), ride.rideId],
     )
+    for (const position of ride.positions) {
+      await this.connection.query(
+        /* sql */
+        `INSERT IGNORE INTO \`position\` (position_id, ride_id, lat, lng, date) VALUES(?,?,?,?,?)`,
+        [
+          position.positionId,
+          ride.rideId,
+          position.coord.getLat(),
+          position.coord.getLong(),
+          position.date,
+        ],
+      )
+    }
   }
 
   async getById(rideId: string): Promise<Ride> {
     const [rideData] = await this.connection.query(
-      'SELECT * FROM ride WHERE ride_id = ?',
+      `SELECT * FROM ride WHERE ride_id = ?`,
       [rideId],
     )
-    return Ride.restore(
+    const ride = Ride.restore(
       rideData.ride_id,
       rideData.passenger_id,
       rideData.driver_id,
@@ -43,7 +58,23 @@ export class RideDAODatabase implements RideDAO {
       Number(rideData.to_lat),
       Number(rideData.to_long),
       rideData.date,
+      Number(rideData.distance),
     )
+    const positionsData = await this.connection.query(
+      `SELECT * FROM position WHERE ride_id = ?`,
+      [rideId],
+    )
+    for (const positionData of positionsData) {
+      ride.positions.push(
+        new Position(
+          positionData.position_id,
+          new Coord(Number(positionData.lat), Number(positionData.lng)),
+          positionData.date,
+        ),
+      )
+    }
+
+    return ride
   }
 
   async getActiveRideByPassengerId(passengerId: string): Promise<any> {

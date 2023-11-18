@@ -1,10 +1,13 @@
 import { randomUUID } from 'node:crypto'
 import { Coord } from './Coord'
 import { Status, StatusFactory } from './Status'
+import { Position } from './Position'
+import { DistanceCalculator } from './DistanceCalculator'
 
 export class Ride {
   driverId?: string
   status: Status
+  positions: Position[]
   private constructor(
     readonly rideId: string,
     readonly passengerId: string,
@@ -12,8 +15,10 @@ export class Ride {
     readonly from: Coord,
     readonly to: Coord,
     readonly date: Date,
+    private distance: number,
   ) {
     this.status = StatusFactory.create(this, status)
+    this.positions = []
   }
 
   static create(
@@ -33,6 +38,7 @@ export class Ride {
       new Coord(fromLat, fromLong),
       new Coord(toLat, toLong),
       date,
+      0,
     )
   }
 
@@ -46,6 +52,7 @@ export class Ride {
     toLat: number,
     toLong: number,
     date: Date,
+    distance: number,
   ) {
     const ride = new Ride(
       rideId,
@@ -54,6 +61,7 @@ export class Ride {
       new Coord(fromLat, fromLong),
       new Coord(toLat, toLong),
       date,
+      distance,
     )
     ride.driverId = driverId
     return ride
@@ -66,6 +74,23 @@ export class Ride {
 
   start() {
     this.status.start()
+  }
+
+  updatePosition(lat: number, long: number) {
+    this.distance = 0
+    this.positions.push(Position.create(lat, long))
+    for (const [index, position] of this.positions.entries()) {
+      const nextPosition = this.positions[index + 1]
+      if (!nextPosition) break
+      this.distance += DistanceCalculator.calculate(
+        position.coord,
+        nextPosition.coord,
+      )
+    }
+  }
+
+  getDistance() {
+    return this.distance
   }
 
   finish() {

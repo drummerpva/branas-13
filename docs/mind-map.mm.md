@@ -225,4 +225,15 @@
 ##### AccountTransfer: Pega duas Accounts e faz transferência entre elas
 
 ### Aggregates
+#### A relação entre os objetos de domínio não é a mesma utilizada no banco de dados
+#### Grandes aggregates poodem trazer desperdício de memóri, além de sobrecarregar o banco de dados sem necessidades, já que nem sempre a camada de aplicação estará interessada em utiliza-lo na íntegra
+#### O desafio é balancear a preservação da invariância com o consumo de recursos
+##### Não ter uma entidade por aggregate, nem 100 entidade por aggregate
+#### Um aggregate é um agrupamento, ou clustes, de objetos de domínio como entities e value objects, estabelecendo os relacionamentos entre eles
+#### Todas as operaçõs são realizadas por meio da ráiz, que é uma entity ou aggregate root <AR>
+#### Boas práticas na criação
+##### Crie aggregates pequenos: Comece sempre com apenas uma entidade e cresça de acordo com as necessidades
+##### Referencie outros aggregates por identidade: Mantenha apenas referência para outros aggregates, isso reduz a quantidade de memória e o esforço que o repositório faz para recuperá-los
+
+
 ### Repositories
