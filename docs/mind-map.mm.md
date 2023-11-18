@@ -234,6 +234,9 @@
 #### Boas práticas na criação
 ##### Crie aggregates pequenos: Comece sempre com apenas uma entidade e cresça de acordo com as necessidades
 ##### Referencie outros aggregates por identidade: Mantenha apenas referência para outros aggregates, isso reduz a quantidade de memória e o esforço que o repositório faz para recuperá-los
-
+#### Se estiver difícil de implementar o repostório, talvez o aggregate seja muito grande e possa ser separado
+#### Um aggregate por referenciar outro por Identidade(ID)
+#### Um aggregate pode ter apenas uma entidade
+#### Uma entidade não faz sentido participar de mais de um aggregate
 
 ### Repositories

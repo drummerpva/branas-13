@@ -7,7 +7,6 @@ import { DistanceCalculator } from './DistanceCalculator'
 export class Ride {
   driverId?: string
   status: Status
-  positions: Position[]
   private constructor(
     readonly rideId: string,
     readonly passengerId: string,
@@ -16,9 +15,9 @@ export class Ride {
     readonly to: Coord,
     readonly date: Date,
     private distance: number,
+    private fare: number,
   ) {
     this.status = StatusFactory.create(this, status)
-    this.positions = []
   }
 
   static create(
@@ -39,6 +38,7 @@ export class Ride {
       new Coord(toLat, toLong),
       date,
       0,
+      0,
     )
   }
 
@@ -53,6 +53,7 @@ export class Ride {
     toLong: number,
     date: Date,
     distance: number,
+    fare: number,
   ) {
     const ride = new Ride(
       rideId,
@@ -62,6 +63,7 @@ export class Ride {
       new Coord(toLat, toLong),
       date,
       distance,
+      fare,
     )
     ride.driverId = driverId
     return ride
@@ -76,24 +78,25 @@ export class Ride {
     this.status.start()
   }
 
-  updatePosition(lat: number, long: number) {
+  getDistance() {
+    return this.distance
+  }
+
+  getFare() {
+    return this.fare
+  }
+
+  finish(positions: Position[]) {
     this.distance = 0
-    this.positions.push(Position.create(lat, long))
-    for (const [index, position] of this.positions.entries()) {
-      const nextPosition = this.positions[index + 1]
+    for (const [index, position] of positions.entries()) {
+      const nextPosition = positions[index + 1]
       if (!nextPosition) break
       this.distance += DistanceCalculator.calculate(
         position.coord,
         nextPosition.coord,
       )
     }
-  }
-
-  getDistance() {
-    return this.distance
-  }
-
-  finish() {
+    this.fare = this.distance * 2.1
     this.status.finish()
   }
 

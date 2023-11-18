@@ -11,12 +11,14 @@ import { StartRide } from '../../src/application/usecase/StartRide'
 import { UpdatePositionV2 } from '../../src/application/usecase/UpdatePositionV2'
 import { PositionRepository } from '../../src/application/repository/PositionRepository'
 import { PositionRepositoryDatabase } from '../../src/infra/repository/PositionRepositoryDatabase'
+import { FinishRide } from '../../src/application/usecase/FinishRide'
 
 let requestRide: RequestRide
 let getRide: GetRide
 let acceptRide: AcceptRide
 let startRide: StartRide
 let updatePosition: UpdatePositionV2
+let finishRide: FinishRide
 let signup: Signup
 let mysqlAdapter: MysqlAdpter
 let accountDAO: AccountDAO
@@ -32,6 +34,7 @@ beforeAll(() => {
   acceptRide = new AcceptRide(rideDAO, accountDAO)
   updatePosition = new UpdatePositionV2(rideDAO, positionRepository)
   startRide = new StartRide(rideDAO)
+  finishRide = new FinishRide(rideDAO, positionRepository)
   signup = new Signup(accountDAO)
 })
 afterAll(async () => {
@@ -86,7 +89,12 @@ test('Deve solicitar, aceitar, iniciar e atualizar a posição de uma corrida', 
     long: -48.522234807851476,
   }
   await updatePosition.execute(inputUpdatePosition2)
+  const inputFinishRide = {
+    rideId: outputRequestRide.rideId,
+  }
+  await finishRide.execute(inputFinishRide)
   const outputGetRide = await getRide.execute(outputRequestRide.rideId)
-  expect(outputGetRide.status).toBe('in_progress')
-  // expect(outputGetRide.distance).toBe(10)
+  expect(outputGetRide.status).toBe('completed')
+  expect(outputGetRide.distance).toBe(10)
+  expect(outputGetRide.fare).toBe(21)
 })

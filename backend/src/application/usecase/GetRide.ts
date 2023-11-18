@@ -12,6 +12,7 @@ type Output = {
   date: Date
   status: string
   distance: number
+  fare: number
   passenger: {
     accountId: string
     name: string
@@ -43,6 +44,7 @@ export class GetRide {
       date: ride.date,
       status: ride.getStatus(),
       distance: ride.getDistance(),
+      fare: ride.getFare(),
       passenger: {
         name: passenger.name.getValue(),
         email: passenger.email.getValue(),
