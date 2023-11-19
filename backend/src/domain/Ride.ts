@@ -3,6 +3,7 @@ import { Coord } from './Coord'
 import { Status, StatusFactory } from './Status'
 import { Position } from './Position'
 import { DistanceCalculator } from './DistanceCalculator'
+import { FareCalculatorFactory } from './FareCalculator'
 
 export class Ride {
   driverId?: string
@@ -96,7 +97,8 @@ export class Ride {
         nextPosition.coord,
       )
     }
-    this.fare = this.distance * 2.1
+    const fareCalculator = FareCalculatorFactory.create(this.date)
+    this.fare = fareCalculator.calculate(this.distance)
     this.status.finish()
   }
 
