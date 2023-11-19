@@ -3,14 +3,14 @@ import { GetRide } from '../../src/application/usecase/GetRide'
 import { AcceptRide } from '../../src/application/usecase/AcceptRide'
 import { Signup } from '../../src/application/usecase/Signup'
 import { MysqlAdpter } from '../../src/infra/databaase/MysqlAdapter'
-import { AccountDAODatabase } from '../../src/infra/repository/AccountDAODatabase'
-import { AccountDAO } from '../../src/application/repository/AccountDAO'
-import { RideDAO } from '../../src/application/repository/RideDAO'
-import { RideDAODatabase } from '../../src/infra/repository/RideDAODatabase'
 import { StartRide } from '../../src/application/usecase/StartRide'
 import { UpdatePositionV2 } from '../../src/application/usecase/UpdatePositionV2'
 import { PositionRepository } from '../../src/application/repository/PositionRepository'
 import { PositionRepositoryDatabase } from '../../src/infra/repository/PositionRepositoryDatabase'
+import { RideRepository } from '../../src/application/repository/RideRepository'
+import { RideRepositoryDatabase } from '../../src/infra/repository/RideRepositoryDatabase'
+import { AccountRepository } from '../../src/application/repository/AccountRepository'
+import { AccountRepositoryDatabase } from '../../src/infra/repository/AccountRepositoryDatabase'
 
 let requestRide: RequestRide
 let getRide: GetRide
@@ -19,20 +19,20 @@ let startRide: StartRide
 let updatePosition: UpdatePositionV2
 let signup: Signup
 let mysqlAdapter: MysqlAdpter
-let accountDAO: AccountDAO
+let accountRepository: AccountRepository
 let positionRepository: PositionRepository
-let rideDAO: RideDAO
+let rideRepository: RideRepository
 beforeAll(() => {
   mysqlAdapter = new MysqlAdpter()
-  rideDAO = new RideDAODatabase(mysqlAdapter)
-  accountDAO = new AccountDAODatabase(mysqlAdapter)
+  rideRepository = new RideRepositoryDatabase(mysqlAdapter)
+  accountRepository = new AccountRepositoryDatabase(mysqlAdapter)
   positionRepository = new PositionRepositoryDatabase(mysqlAdapter)
-  requestRide = new RequestRide(rideDAO, accountDAO)
-  getRide = new GetRide(rideDAO, accountDAO)
-  acceptRide = new AcceptRide(rideDAO, accountDAO)
-  updatePosition = new UpdatePositionV2(rideDAO, positionRepository)
-  startRide = new StartRide(rideDAO)
-  signup = new Signup(accountDAO)
+  requestRide = new RequestRide(rideRepository, accountRepository)
+  getRide = new GetRide(rideRepository, accountRepository)
+  acceptRide = new AcceptRide(rideRepository, accountRepository)
+  updatePosition = new UpdatePositionV2(rideRepository, positionRepository)
+  startRide = new StartRide(rideRepository)
+  signup = new Signup(accountRepository)
 })
 afterAll(async () => {
   await mysqlAdapter.close()

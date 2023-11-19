@@ -1,7 +1,7 @@
-import { AccountDAO } from '../../application/repository/AccountDAO'
+import { AccountRepository } from '../../application/repository/AccountRepository'
 import { Account } from '../../domain/Account'
 import { Connection } from '../databaase/Connection'
-export class AccountDAODatabase implements AccountDAO {
+export class AccountRepositoryDatabase implements AccountRepository {
   constructor(readonly connection: Connection) {}
 
   async save(account: Account) {

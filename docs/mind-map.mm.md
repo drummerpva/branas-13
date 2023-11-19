@@ -240,3 +240,7 @@
 #### Uma entidade não faz sentido participar de mais de um aggregate
 
 ### Repositories
+#### É uma extensão do domínio, reponsável por realizar a persitência dos aggregates, separando o domínio da infraestrutura
+#### Repository vs DAO(Table Data Gateway)
+##### DAO vai lidar com tabelas(CRUD)
+##### Repository vai peristir/recuperar o Aggregate inteiro, para manter o estado interno válido

@@ -1,5 +1,5 @@
 import { PositionRepository } from '../repository/PositionRepository'
-import { RideDAO } from '../repository/RideDAO'
+import { RideRepository } from '../repository/RideRepository'
 
 type Input = {
   rideId: string
@@ -7,14 +7,14 @@ type Input = {
 
 export class FinishRide {
   constructor(
-    readonly rideDAO: RideDAO,
+    readonly rideRepository: RideRepository,
     readonly positionRepository: PositionRepository,
   ) {}
 
   async execute(input: Input) {
-    const ride = await this.rideDAO.getById(input.rideId)
+    const ride = await this.rideRepository.getById(input.rideId)
     const positions = await this.positionRepository.getByRideId(input.rideId)
     ride.finish(positions)
-    await this.rideDAO.update(ride)
+    await this.rideRepository.update(ride)
   }
 }

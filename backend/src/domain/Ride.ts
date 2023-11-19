@@ -6,7 +6,7 @@ import { DistanceCalculator } from './DistanceCalculator'
 
 export class Ride {
   driverId?: string
-  status: Status
+  private status: Status
   private constructor(
     readonly rideId: string,
     readonly passengerId: string,

@@ -4,11 +4,11 @@ import { GetRide } from '../../src/application/usecase/GetRide'
 import { AcceptRide } from '../../src/application/usecase/AcceptRide'
 import { Signup } from '../../src/application/usecase/Signup'
 import { MysqlAdpter } from '../../src/infra/databaase/MysqlAdapter'
-import { AccountDAODatabase } from '../../src/infra/repository/AccountDAODatabase'
-import { AccountDAO } from '../../src/application/repository/AccountDAO'
-import { RideDAO } from '../../src/application/repository/RideDAO'
-import { RideDAODatabase } from '../../src/infra/repository/RideDAODatabase'
 import { StartRide } from '../../src/application/usecase/StartRide'
+import { RideRepository } from '../../src/application/repository/RideRepository'
+import { RideRepositoryDatabase } from '../../src/infra/repository/RideRepositoryDatabase'
+import { AccountRepository } from '../../src/application/repository/AccountRepository'
+import { AccountRepositoryDatabase } from '../../src/infra/repository/AccountRepositoryDatabase'
 
 let requestRide: RequestRide
 let getRide: GetRide
@@ -16,17 +16,17 @@ let acceptRide: AcceptRide
 let startRide: StartRide
 let signup: Signup
 let mysqlAdapter: MysqlAdpter
-let accountDAO: AccountDAO
-let rideDAO: RideDAO
+let accountRepository: AccountRepository
+let rideRepository: RideRepository
 beforeAll(() => {
   mysqlAdapter = new MysqlAdpter()
-  rideDAO = new RideDAODatabase(mysqlAdapter)
-  accountDAO = new AccountDAODatabase(mysqlAdapter)
-  requestRide = new RequestRide(rideDAO, accountDAO)
-  getRide = new GetRide(rideDAO, accountDAO)
-  acceptRide = new AcceptRide(rideDAO, accountDAO)
-  startRide = new StartRide(rideDAO)
-  signup = new Signup(accountDAO)
+  rideRepository = new RideRepositoryDatabase(mysqlAdapter)
+  accountRepository = new AccountRepositoryDatabase(mysqlAdapter)
+  requestRide = new RequestRide(rideRepository, accountRepository)
+  getRide = new GetRide(rideRepository, accountRepository)
+  acceptRide = new AcceptRide(rideRepository, accountRepository)
+  startRide = new StartRide(rideRepository)
+  signup = new Signup(accountRepository)
 })
 afterAll(async () => {
   await mysqlAdapter.close()

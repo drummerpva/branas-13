@@ -1,7 +1,7 @@
-import { RideDAO } from '../../application/repository/RideDAO'
+import { RideRepository } from '../../application/repository/RideRepository'
 import { Ride } from '../../domain/Ride'
 import { Connection } from '../databaase/Connection'
-export class RideDAODatabase implements RideDAO {
+export class RideRepositoryDatabase implements RideRepository {
   constructor(readonly connection: Connection) {}
 
   async save(ride: Ride) {

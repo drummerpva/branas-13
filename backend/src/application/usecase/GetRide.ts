@@ -1,5 +1,5 @@
-import { AccountDAO } from '../repository/AccountDAO'
-import { RideDAO } from '../repository/RideDAO'
+import { AccountRepository } from '../repository/AccountRepository'
+import { RideRepository } from '../repository/RideRepository'
 
 type Output = {
   rideId: string
@@ -25,13 +25,13 @@ type Output = {
 }
 export class GetRide {
   constructor(
-    readonly rideDAO: RideDAO,
-    readonly accountDAO: AccountDAO,
+    readonly rideRepository: RideRepository,
+    readonly accountRepository: AccountRepository,
   ) {}
 
   async execute(rideId: string): Promise<Output> {
-    const ride = await this.rideDAO.getById(rideId)
-    const passenger = await this.accountDAO.getById(ride.passengerId)
+    const ride = await this.rideRepository.getById(rideId)
+    const passenger = await this.accountRepository.getById(ride.passengerId)
     if (!ride || !passenger) throw new Error()
     return {
       rideId: ride.rideId,

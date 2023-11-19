@@ -1,15 +1,15 @@
 import { test, expect, beforeAll, afterAll } from 'vitest'
-import { AccountDAODatabase } from '../../src/infra/repository/AccountDAODatabase'
 import { Account } from '../../src/domain/Account'
-import { AccountDAO } from '../../src/application/repository/AccountDAO'
 import { Connection } from '../../src/infra/databaase/Connection'
 import { MysqlAdpter } from '../../src/infra/databaase/MysqlAdapter'
+import { AccountRepository } from '../../src/application/repository/AccountRepository'
+import { AccountRepositoryDatabase } from '../../src/infra/repository/AccountRepositoryDatabase'
 
-let accountDAO: AccountDAO
+let accountRepository: AccountRepository
 let connection: Connection
 beforeAll(() => {
   connection = new MysqlAdpter()
-  accountDAO = new AccountDAODatabase(connection)
+  accountRepository = new AccountRepositoryDatabase(connection)
 })
 afterAll(async () => {
   await connection.close()
@@ -24,8 +24,10 @@ test('Deve criar um registro na tabela account e consultar por email', async () 
     false,
     '',
   )
-  await accountDAO.save(account)
-  const savedAccount = await accountDAO.getByEmail(account.email.getValue())
+  await accountRepository.save(account)
+  const savedAccount = await accountRepository.getByEmail(
+    account.email.getValue(),
+  )
   expect(savedAccount?.accountId).toBeDefined()
   expect(savedAccount?.name.getValue()).toBe(account.name.getValue())
   expect(savedAccount?.email.getValue()).toBe(account.email.getValue())
@@ -43,8 +45,8 @@ test('Deve criar um registro na tabela account e consultar por account_id', asyn
     false,
     '',
   )
-  await accountDAO.save(account)
-  const savedAccount = await accountDAO.getById(account.accountId)
+  await accountRepository.save(account)
+  const savedAccount = await accountRepository.getById(account.accountId)
   expect(savedAccount?.accountId).toBeDefined()
   expect(savedAccount?.name.getValue()).toBe(account.name.getValue())
   expect(savedAccount?.email.getValue()).toBe(account.email.getValue())

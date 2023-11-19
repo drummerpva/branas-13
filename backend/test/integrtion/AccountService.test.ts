@@ -1,24 +1,24 @@
 import { test, expect, beforeAll, afterAll } from 'vitest'
 import sinon from 'sinon'
-import { AccountDAODatabase } from '../../src/infra/repository/AccountDAODatabase'
 import { MailerGateway } from '../../src/infra/gateway/MailerGateway'
-import { AccountDAOMemory } from '../../src/infra/repository/AccountDAOMemory'
+import { AccountRepositoryMemory } from '../../src/infra/repository/AccountRepositoryMemory'
 import { Account } from '../../src/domain/Account'
 import { Signup } from '../../src/application/usecase/Signup'
 import { GetAccount } from '../../src/application/usecase/GetAccount'
 import { Connection } from '../../src/infra/databaase/Connection'
 import { MysqlAdpter } from '../../src/infra/databaase/MysqlAdapter'
-import { AccountDAO } from '../../src/application/repository/AccountDAO'
+import { AccountRepository } from '../../src/application/repository/AccountRepository'
+import { AccountRepositoryDatabase } from '../../src/infra/repository/AccountRepositoryDatabase'
 
 let signup: Signup
 let getAccount: GetAccount
 let connection: Connection
-let accountDAO: AccountDAO
+let accountRepository: AccountRepository
 beforeAll(() => {
   connection = new MysqlAdpter()
-  accountDAO = new AccountDAODatabase(connection)
-  signup = new Signup(accountDAO)
-  getAccount = new GetAccount(accountDAO)
+  accountRepository = new AccountRepositoryDatabase(connection)
+  signup = new Signup(accountRepository)
+  getAccount = new GetAccount(accountRepository)
 })
 afterAll(async () => {
   await connection.close()
@@ -120,13 +120,13 @@ test('Deve criar um passageiro com Stub', async function () {
     cpf: '95818705552',
     isPassenger: true,
   }
-  sinon.stub(AccountDAODatabase.prototype, 'save').resolves()
-  sinon.stub(AccountDAODatabase.prototype, 'getByEmail').resolves()
+  sinon.stub(AccountRepositoryDatabase.prototype, 'save').resolves()
+  sinon.stub(AccountRepositoryDatabase.prototype, 'getByEmail').resolves()
 
   const output = await signup.execute(input)
   input.account_id = output.accountId
   sinon
-    .stub(AccountDAODatabase.prototype, 'getById')
+    .stub(AccountRepositoryDatabase.prototype, 'getById')
     .resolves(
       Account.create(
         input.name,
@@ -152,12 +152,12 @@ test('Deve criar um passageiro com Spy', async function () {
     cpf: '95818705552',
     isPassenger: true,
   }
-  sinon.stub(AccountDAODatabase.prototype, 'save').resolves()
-  sinon.stub(AccountDAODatabase.prototype, 'getByEmail').resolves()
+  sinon.stub(AccountRepositoryDatabase.prototype, 'save').resolves()
+  sinon.stub(AccountRepositoryDatabase.prototype, 'getByEmail').resolves()
 
   const output = await signup.execute(input)
   input.account_id = output.accountId
-  sinon.stub(AccountDAODatabase.prototype, 'getById').resolves(input)
+  sinon.stub(AccountRepositoryDatabase.prototype, 'getById').resolves(input)
   expect(sendSpy.calledOnce).toBeTruthy()
   expect(sendSpy.calledWith(input.email, 'Verification')).toBeTruthy()
   sinon.restore()
@@ -171,13 +171,13 @@ test('Deve criar um passageiro com Mock', async function () {
   }
   const mailerMock = sinon.mock(MailerGateway.prototype)
   mailerMock.expects('send').withArgs(input.email, 'Verification').once()
-  const mockAccountDAO = sinon.mock(AccountDAODatabase.prototype)
-  mockAccountDAO.expects('save').resolves()
-  mockAccountDAO.expects('getByEmail').resolves()
+  const mockAccountRepository = sinon.mock(AccountRepositoryDatabase.prototype)
+  mockAccountRepository.expects('save').resolves()
+  mockAccountRepository.expects('getByEmail').resolves()
 
   const output = await signup.execute(input)
   input.account_id = output.accountId
-  mockAccountDAO.expects('getById').resolves({
+  mockAccountRepository.expects('getById').resolves({
     ...input,
     cpf: {
       getValue() {
@@ -205,15 +205,15 @@ test('Deve criar um passageiro com Mock', async function () {
   sinon.restore()
 })
 test('Deve criar um passageiro com Fake', async function () {
-  const accountDAOFake = new AccountDAOMemory()
+  const accountRepositoryFake = new AccountRepositoryMemory()
   const input = {
     name: 'John Doe',
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: '95818705552',
     isPassenger: true,
   }
-  const signupFake = new Signup(accountDAOFake)
-  const getAccountFake = new GetAccount(accountDAOFake)
+  const signupFake = new Signup(accountRepositoryFake)
+  const getAccountFake = new GetAccount(accountRepositoryFake)
   const output = await signupFake.execute(input)
   const account = await getAccountFake.execute(output.accountId)
   expect(account?.accountId).toBeDefined()

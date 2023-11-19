@@ -1,6 +1,6 @@
 import { Position } from '../../domain/Position'
 import { PositionRepository } from '../repository/PositionRepository'
-import { RideDAO } from '../repository/RideDAO'
+import { RideRepository } from '../repository/RideRepository'
 
 type Input = {
   rideId: string
@@ -10,13 +10,13 @@ type Input = {
 
 export class UpdatePositionV2 {
   constructor(
-    readonly rideDAO: RideDAO,
+    readonly rideRepository: RideRepository,
     readonly positionRepository: PositionRepository,
   ) {}
 
   async execute(input: Input) {
-    const ride = await this.rideDAO.getById(input.rideId)
-    if (ride.status.value !== 'in_progress') throw new Error()
+    const ride = await this.rideRepository.getById(input.rideId)
+    if (ride.getStatus() !== 'in_progress') throw new Error()
     const position = Position.create(input.rideId, input.lat, input.long)
     await this.positionRepository.save(position)
   }

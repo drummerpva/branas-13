@@ -1,15 +1,15 @@
-import { RideDAO } from '../repository/RideDAO'
+import { RideRepository } from '../repository/RideRepository'
 
 type Input = {
   rideId: string
 }
 
 export class StartRide {
-  constructor(readonly rideDAO: RideDAO) {}
+  constructor(readonly rideRepository: RideRepository) {}
 
   async execute(input: Input) {
-    const ride = await this.rideDAO.getById(input.rideId)
+    const ride = await this.rideRepository.getById(input.rideId)
     ride.start()
-    await this.rideDAO.update(ride)
+    await this.rideRepository.update(ride)
   }
 }

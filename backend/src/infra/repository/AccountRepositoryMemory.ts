@@ -1,6 +1,6 @@
-import { AccountDAO } from '../../application/repository/AccountDAO'
+import { AccountRepository } from '../../application/repository/AccountRepository'
 
-export class AccountDAOMemory implements AccountDAO {
+export class AccountRepositoryMemory implements AccountRepository {
   accounts: any[]
 
   constructor() {

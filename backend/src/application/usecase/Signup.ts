@@ -1,6 +1,6 @@
 import { MailerGateway } from '../../infra/gateway/MailerGateway'
-import { AccountDAO } from '../repository/AccountDAO'
 import { Account } from '../../domain/Account'
+import { AccountRepository } from '../repository/AccountRepository'
 type Input = {
   name: string
   email: string
@@ -13,7 +13,7 @@ type Input = {
 export class Signup {
   mailerGateway: MailerGateway
 
-  constructor(readonly accountDAO: AccountDAO) {
+  constructor(readonly accountRepository: AccountRepository) {
     this.mailerGateway = new MailerGateway()
   }
 
@@ -26,10 +26,10 @@ export class Signup {
       input.isDriver ?? false,
       input.carPlate ?? '',
     )
-    const existingAccount = await this.accountDAO.getByEmail(input.email)
+    const existingAccount = await this.accountRepository.getByEmail(input.email)
     if (existingAccount) throw new Error('Account already exists')
 
-    await this.accountDAO.save(account)
+    await this.accountRepository.save(account)
     await this.mailerGateway.send(
       account.email.getValue(),
       'Verification',
