@@ -244,3 +244,14 @@
 #### Repository vs DAO(Table Data Gateway)
 ##### DAO vai lidar com tabelas(CRUD)
 ##### Repository vai peristir/recuperar o Aggregate inteiro, para manter o estado interno válido
+#### Somente parte do aggregate mudou, posso persistir apenas essa parte? NÃO
+##### A persistência é sempre realizada sobre o aggregate inteiro, no entando a implementação do repository pode decdir quais registros do banco de dados devem ser atualizados
+#### Posso obter apenas parte do aggregate? NÃO
+##### Ter um Query Model do CQRS pode resolver, deixando de lado DDD para obtenção
+#### Posso utilizar lazy loading dentro do aggregate? NÃO
+##### Talvez a solução é diminuir o aggregate, pos a preservação da invariância depende da integridade do aggregate, se parte dele não estiver populado pode perder o sentido
+#### É possivel utilizar diferentes filtros para obter um aggregate? Sim porem...
+##### Pode deixar muito complexa obtenção de dados, novamente o Query Model do CQRS seria uma melor escolha para isso
+#### Posso gerar dados para emissão de um relatório a partir de um repository? Não faz sentido
+##### Geralmente irá precisar de muitos dados, de muitos aggregates, mais uma vez um Query Model seria melhor
+##### A granularidade de um relatório é diferente da utilizada pelo aggregate e renderizar relatórios a partir de repositories pode ser excessivamente complexo, prefira a utilização de CQRS com ac riação de consultas separadas
