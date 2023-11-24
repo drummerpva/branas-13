@@ -1,3 +1,4 @@
+import { RepositoryFactory } from '../factory/RepositoryFactory'
 import { AccountRepository } from '../repository/AccountRepository'
 import { RideRepository } from '../repository/RideRepository'
 
@@ -24,10 +25,12 @@ type Output = {
   }
 }
 export class GetRide {
-  constructor(
-    readonly rideRepository: RideRepository,
-    readonly accountRepository: AccountRepository,
-  ) {}
+  private rideRepository: RideRepository
+  private accountRepository: AccountRepository
+  constructor(repositoryFactory: RepositoryFactory) {
+    this.rideRepository = repositoryFactory.createRideRepository()
+    this.accountRepository = repositoryFactory.createAccountRepository()
+  }
 
   async execute(rideId: string): Promise<Output> {
     const ride = await this.rideRepository.getById(rideId)

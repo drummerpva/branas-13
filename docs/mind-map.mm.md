@@ -255,3 +255,6 @@
 #### Posso gerar dados para emissão de um relatório a partir de um repository? Não faz sentido
 ##### Geralmente irá precisar de muitos dados, de muitos aggregates, mais uma vez um Query Model seria melhor
 ##### A granularidade de um relatório é diferente da utilizada pelo aggregate e renderizar relatórios a partir de repositories pode ser excessivamente complexo, prefira a utilização de CQRS com ac riação de consultas separadas
+
+# Abstract Factory
+## Provê uma interface para criação de famílias de objetos

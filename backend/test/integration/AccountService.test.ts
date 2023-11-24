@@ -9,16 +9,20 @@ import { Connection } from '../../src/infra/databaase/Connection'
 import { MysqlAdpter } from '../../src/infra/databaase/MysqlAdapter'
 import { AccountRepository } from '../../src/application/repository/AccountRepository'
 import { AccountRepositoryDatabase } from '../../src/infra/repository/AccountRepositoryDatabase'
+import { RepositoryFactory } from '../../src/application/factory/RepositoryFactory'
+import { DatabaseRepositoryFactory } from '../../src/infra/databaase/factory/DatabaseRepositoryFactory'
+import { PositionRepository } from '../../src/application/repository/PositionRepository'
+import { RideRepository } from '../../src/application/repository/RideRepository'
 
 let signup: Signup
 let getAccount: GetAccount
 let connection: Connection
-let accountRepository: AccountRepository
+let repositoryFactory: RepositoryFactory
 beforeAll(() => {
   connection = new MysqlAdpter()
-  accountRepository = new AccountRepositoryDatabase(connection)
-  signup = new Signup(accountRepository)
-  getAccount = new GetAccount(accountRepository)
+  repositoryFactory = new DatabaseRepositoryFactory(connection)
+  signup = new Signup(repositoryFactory)
+  getAccount = new GetAccount(repositoryFactory)
 })
 afterAll(async () => {
   await connection.close()
@@ -206,14 +210,25 @@ test('Deve criar um passageiro com Mock', async function () {
 })
 test('Deve criar um passageiro com Fake', async function () {
   const accountRepositoryFake = new AccountRepositoryMemory()
+  const repositoryFactoryFake: RepositoryFactory = {
+    createRideRepository: function (): RideRepository {
+      throw new Error('Function not implemented.')
+    },
+    createAccountRepository: function (): AccountRepository {
+      return accountRepositoryFake
+    },
+    createPositionRepository: function (): PositionRepository {
+      throw new Error('Function not implemented.')
+    },
+  }
   const input = {
     name: 'John Doe',
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: '95818705552',
     isPassenger: true,
   }
-  const signupFake = new Signup(accountRepositoryFake)
-  const getAccountFake = new GetAccount(accountRepositoryFake)
+  const signupFake = new Signup(repositoryFactoryFake)
+  const getAccountFake = new GetAccount(repositoryFactoryFake)
   const output = await signupFake.execute(input)
   const account = await getAccountFake.execute(output.accountId)
   expect(account?.accountId).toBeDefined()

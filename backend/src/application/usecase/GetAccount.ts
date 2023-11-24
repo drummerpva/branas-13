@@ -1,3 +1,4 @@
+import { RepositoryFactory } from '../factory/RepositoryFactory'
 import { AccountRepository } from '../repository/AccountRepository'
 
 type Output = {
@@ -10,7 +11,10 @@ type Output = {
   isDriver: boolean
 }
 export class GetAccount {
-  constructor(readonly accountRepository: AccountRepository) {}
+  private accountRepository: AccountRepository
+  constructor(repositoryFactory: RepositoryFactory) {
+    this.accountRepository = repositoryFactory.createAccountRepository()
+  }
 
   async execute(accountId: string): Promise<Output> {
     const account = await this.accountRepository.getById(accountId)

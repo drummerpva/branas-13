@@ -9,8 +9,8 @@ import { PositionRepository } from '../../src/application/repository/PositionRep
 import { PositionRepositoryDatabase } from '../../src/infra/repository/PositionRepositoryDatabase'
 import { RideRepository } from '../../src/application/repository/RideRepository'
 import { RideRepositoryDatabase } from '../../src/infra/repository/RideRepositoryDatabase'
-import { AccountRepository } from '../../src/application/repository/AccountRepository'
-import { AccountRepositoryDatabase } from '../../src/infra/repository/AccountRepositoryDatabase'
+import { RepositoryFactory } from '../../src/application/factory/RepositoryFactory'
+import { DatabaseRepositoryFactory } from '../../src/infra/databaase/factory/DatabaseRepositoryFactory'
 
 let requestRide: RequestRide
 let getRide: GetRide
@@ -19,20 +19,20 @@ let startRide: StartRide
 let updatePosition: UpdatePositionV2
 let signup: Signup
 let mysqlAdapter: MysqlAdpter
-let accountRepository: AccountRepository
 let positionRepository: PositionRepository
 let rideRepository: RideRepository
+let repositoryFactory: RepositoryFactory
 beforeAll(() => {
   mysqlAdapter = new MysqlAdpter()
   rideRepository = new RideRepositoryDatabase(mysqlAdapter)
-  accountRepository = new AccountRepositoryDatabase(mysqlAdapter)
   positionRepository = new PositionRepositoryDatabase(mysqlAdapter)
-  requestRide = new RequestRide(rideRepository, accountRepository)
-  getRide = new GetRide(rideRepository, accountRepository)
-  acceptRide = new AcceptRide(rideRepository, accountRepository)
+  repositoryFactory = new DatabaseRepositoryFactory(mysqlAdapter)
+  requestRide = new RequestRide(repositoryFactory)
+  getRide = new GetRide(repositoryFactory)
+  acceptRide = new AcceptRide(repositoryFactory)
   updatePosition = new UpdatePositionV2(rideRepository, positionRepository)
   startRide = new StartRide(rideRepository)
-  signup = new Signup(accountRepository)
+  signup = new Signup(repositoryFactory)
 })
 afterAll(async () => {
   await mysqlAdapter.close()

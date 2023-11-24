@@ -1,4 +1,5 @@
 import { Ride } from '../../domain/Ride'
+import { RepositoryFactory } from '../factory/RepositoryFactory'
 import { AccountRepository } from '../repository/AccountRepository'
 import { RideRepository } from '../repository/RideRepository'
 type Input = {
@@ -18,10 +19,12 @@ type Output = {
 }
 
 export class RequestRide {
-  constructor(
-    readonly rideRepository: RideRepository,
-    readonly accountRepository: AccountRepository,
-  ) {}
+  private accountRepository: AccountRepository
+  private rideRepository: RideRepository
+  constructor(repositoryFactory: RepositoryFactory) {
+    this.accountRepository = repositoryFactory.createAccountRepository()
+    this.rideRepository = repositoryFactory.createRideRepository()
+  }
 
   async execute(input: Input): Promise<Output> {
     const account = await this.accountRepository.getById(input.passengerId)

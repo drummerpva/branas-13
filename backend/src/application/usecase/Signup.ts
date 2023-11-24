@@ -1,6 +1,7 @@
 import { MailerGateway } from '../../infra/gateway/MailerGateway'
 import { Account } from '../../domain/Account'
 import { AccountRepository } from '../repository/AccountRepository'
+import { RepositoryFactory } from '../factory/RepositoryFactory'
 type Input = {
   name: string
   email: string
@@ -12,9 +13,10 @@ type Input = {
 
 export class Signup {
   mailerGateway: MailerGateway
-
-  constructor(readonly accountRepository: AccountRepository) {
+  accountRepository: AccountRepository
+  constructor(repositoryFactory: RepositoryFactory) {
     this.mailerGateway = new MailerGateway()
+    this.accountRepository = repositoryFactory.createAccountRepository()
   }
 
   async execute(input: Input) {
