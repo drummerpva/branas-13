@@ -7,7 +7,8 @@ import { GetRide } from '../../application/usecase/GetRide'
 import { Registry } from '../dependency-injection/Registry'
 
 export class MainController {
-  @inject('signup') // Não funciona
+  // Usando decorators(annotations) para injetar dependências
+  @inject('signup')
   signup?: Signup
 
   @inject('requestRide')
@@ -19,18 +20,21 @@ export class MainController {
   @inject('getRide')
   getRide?: GetRide
 
+  @inject('httpServer')
+  httpServer?: HttpServer
+
+  // Usando Singleton para injetar dependências
   registry: Registry
-  constructor(readonly httpServer: HttpServer) {
+  constructor() {
     this.registry = Registry.getInstance()
-    // injectDependencies(this)
   }
 
   registerEndpoints() {
-    this.httpServer.on('post', '/signup', async (params: any, body: any) => {
+    this.httpServer?.on('post', '/signup', async (params: any, body: any) => {
       const output = await this.signup?.execute(body)
       return output
     })
-    this.httpServer.on(
+    this.httpServer?.on(
       'post',
       '/request_ride',
       async (params: any, body: any) => {
@@ -38,12 +42,14 @@ export class MainController {
         return output
       },
     )
-    this.httpServer.on('get', '/accounts/:accountId', async (params: any) => {
+    this.httpServer?.on('get', '/accounts/:accountId', async (params: any) => {
       const output = await this.getAccount?.execute(params.accountId)
       return output
     })
-    this.httpServer.on('get', '/rides/:rideId', async (params: any) => {
-      const output = await this.getRide?.execute(params.rideId)
+    this.httpServer?.on('get', '/rides/:rideId', async (params: any) => {
+      const output = await this.registry
+        .inject('getRide')
+        .execute(params.rideId)
       return output
     })
   }

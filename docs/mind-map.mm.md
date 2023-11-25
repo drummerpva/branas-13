@@ -258,3 +258,6 @@
 
 # Abstract Factory
 ## Provê uma interface para criação de famílias de objetos
+
+# Singleton
+## Ele só é considerado um anti pattern caso você guarde estado dentro dele

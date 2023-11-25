@@ -1,5 +1,5 @@
 import { Registry } from './Registry'
-
+// Caso use o target com ES2022 precsa setar useDefineForClassFields: false no tsconfig.json
 export function inject(name: string) {
   return (target: any, pKey: string) => {
     target[pKey] = new Proxy(
@@ -14,6 +14,8 @@ export function inject(name: string) {
   }
 }
 
+// Para usar com o ES2022 com useDefineForClassFields: true usa-se o código abaixo,
+// e a função injectDependencies deve ser chamada dentro do construtor da classe que tem os decorators
 /* const InjectableProperties = new Map<object, Map<string, string>>()
 
 export function inject(name: string) {
