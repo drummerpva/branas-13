@@ -9,6 +9,7 @@ type Input = {
   isPassenger?: boolean
   isDriver?: boolean
   carPlate?: string
+  password?: string
 }
 
 export class Signup {
@@ -27,6 +28,7 @@ export class Signup {
       input.isPassenger ?? false,
       input.isDriver ?? false,
       input.carPlate ?? '',
+      input.password,
     )
     const existingAccount = await this.accountRepository.getByEmail(input.email)
     if (existingAccount) throw new Error('Account already exists')

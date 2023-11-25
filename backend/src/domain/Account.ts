@@ -3,6 +3,7 @@ import { Cpf } from './Cpf'
 import { Email } from './Email'
 import { Name } from './Name'
 import { CarPlate } from './CarPlate'
+import { Password, PlainTextPassword } from './Password'
 
 export class Account {
   private constructor(
@@ -15,6 +16,7 @@ export class Account {
     readonly carPlate: CarPlate,
     readonly date: Date,
     readonly verificationCode: string,
+    readonly password: Password,
   ) {}
 
   static create(
@@ -24,6 +26,7 @@ export class Account {
     isPassenger: boolean,
     isDriver: boolean,
     carPlate: string,
+    password: '',
   ) {
     const accountId = randomUUID()
     const verificationCode = randomUUID()
@@ -38,6 +41,7 @@ export class Account {
       new CarPlate(carPlate),
       date,
       verificationCode,
+      PlainTextPassword.create(password),
     )
   }
 
@@ -51,6 +55,7 @@ export class Account {
     carPlate: string,
     date: Date,
     verificationCode: string,
+    password = '',
   ) {
     return new Account(
       accountId,
@@ -62,6 +67,7 @@ export class Account {
       new CarPlate(carPlate),
       date,
       verificationCode,
+      PlainTextPassword.restore(password, ''),
     )
   }
 }

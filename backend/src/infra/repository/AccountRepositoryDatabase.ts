@@ -6,7 +6,10 @@ export class AccountRepositoryDatabase implements AccountRepository {
 
   async save(account: Account) {
     await this.connection.query(
-      'insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver, date, is_verified, verification_code) values (?,?,?,?,?,?,?,?,?,?)',
+      `insert into account 
+        (account_id, name, email, cpf, car_plate, is_passenger, is_driver, date, is_verified, 
+          verification_code, password, password_algorithm, password_salt) 
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       [
         account.accountId,
         account.name.getValue(),
@@ -18,6 +21,9 @@ export class AccountRepositoryDatabase implements AccountRepository {
         account.date,
         false,
         account.verificationCode,
+        account.password.value,
+        account.password.algorithm,
+        account.password.salt,
       ],
     )
   }
@@ -38,6 +44,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
       accountData.car_plate,
       accountData.date,
       accountData.verification_code,
+      accountData.password,
     )
   }
 
@@ -57,6 +64,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
       accountData.car_plate,
       accountData.date,
       accountData.verification_code,
+      accountData.password,
     )
   }
 }
