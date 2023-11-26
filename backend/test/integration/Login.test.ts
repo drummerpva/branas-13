@@ -22,7 +22,7 @@ test('Deve fazer um login', async () => {
   const inputSignup = {
     name: 'John Doe',
     email: `john.doe${Math.random()}@gmail.com`,
-    cpf: '95818705552',
+    cpf: '98765432100',
     isPassenger: true,
     password: '123456',
   }
@@ -30,7 +30,10 @@ test('Deve fazer um login', async () => {
   const inputLogin = {
     email: inputSignup.email,
     password: inputSignup.password,
+    date: new Date('2023-11-26T10:00:00'),
   }
   const outputLogin = await login.execute(inputLogin)
-  expect(outputLogin.token).toBeDefined()
+  expect(outputLogin.token).toBe(
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcGYiOiI5ODc2NTQzMjEwMCIsImlhdCI6MTcwMTAwMzYwMDAwMCwiZXhwaXJlc0luIjoxMDAwMDAwMDB9.ebqdbU8HpWsf-M8hJMsjaUwxnQFrDj7MScnpowoE1qU',
+  )
 })

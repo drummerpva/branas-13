@@ -64,7 +64,7 @@ export class Pbkdf2Password implements Password {
     this.algorithm = 'pbkdf2'
   }
 
-  static create(password: string) {
+  static create(password = '') {
     const salt = randomBytes(20).toString('hex')
     const value = pbkdf2Sync(password, salt, 100, 64, 'sha512').toString('hex')
     return new Pbkdf2Password(value, salt)
