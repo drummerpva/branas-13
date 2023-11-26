@@ -3,7 +3,7 @@ import { Cpf } from './Cpf'
 import { Email } from './Email'
 import { Name } from './Name'
 import { CarPlate } from './CarPlate'
-import { Password, PlainTextPassword } from './Password'
+import { Password, PasswordFactory, Pbkdf2Password } from './Password'
 
 export class Account {
   private constructor(
@@ -41,7 +41,7 @@ export class Account {
       new CarPlate(carPlate),
       date,
       verificationCode,
-      PlainTextPassword.create(password),
+      Pbkdf2Password.create(password),
     )
   }
 
@@ -56,6 +56,8 @@ export class Account {
     date: Date,
     verificationCode: string,
     password = '',
+    passwordAlgorithm: string,
+    passwordSalt: string,
   ) {
     return new Account(
       accountId,
@@ -67,7 +69,7 @@ export class Account {
       new CarPlate(carPlate),
       date,
       verificationCode,
-      PlainTextPassword.restore(password, ''),
+      PasswordFactory.create(passwordAlgorithm).restore(password, passwordSalt),
     )
   }
 }

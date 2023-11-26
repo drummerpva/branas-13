@@ -45,6 +45,8 @@ export class AccountRepositoryDatabase implements AccountRepository {
       accountData.date,
       accountData.verification_code,
       accountData.password,
+      accountData.password_algorithm,
+      accountData.password_salt,
     )
   }
 
@@ -65,6 +67,8 @@ export class AccountRepositoryDatabase implements AccountRepository {
       accountData.date,
       accountData.verification_code,
       accountData.password,
+      accountData.password_algorithm,
+      accountData.password_salt,
     )
   }
 }
