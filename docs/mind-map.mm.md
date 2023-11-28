@@ -256,6 +256,83 @@
 ##### Geralmente irá precisar de muitos dados, de muitos aggregates, mais uma vez um Query Model seria melhor
 ##### A granularidade de um relatório é diferente da utilizada pelo aggregate e renderizar relatórios a partir de repositories pode ser excessivamente complexo, prefira a utilização de CQRS com ac riação de consultas separadas
 
+## Modelagem estratégica
+### Usar uma base de código só, ela vai acabar crescendo demais
+#### Com o tempo, principalemnte em um domínio complexo, existe o risco de isso acontecer...
+#### São muitas pessoas envolvidas, existe a integração de diversas áreas de negócio
+#### Normalmente acontece um fenômeno conhecido como Big Ball of Mud
+### Modelagem estratégica identifica e define fronteiras entre os bounded contexts
+#### Todo domínio pode e deve ser dividido em subdomínios
+#### Tipos de subdomínio
+##### Core ou Basic: É o mais importante e que traz mais valor para a empresa, é onde você coloca seus maiores e melhores esforços
+##### Support ou Auxiliary: Complementa o core domain, sem ele não é possíevl ter sucesso no negócio
+##### Generic: É um subdomínio que pode ser delegado para outra empresa ou mesmo ser um produto de mercado
+
+#### Bounded Context
+##### É onde eu vou ter minha modelagem tática
+##### Vai ajudar a não cair no Big Ball of Mud
+##### É um bom ponto de divisão de micro-serviços
+##### Qual a relação entre um subdomínio e um bounded context?
+###### Um único Bounded Context atendendo vários subdomínios seria um Monolito
+###### Um subdomínio pode ter 1 ou mais bounded context
+###### Na dúvida adote a relação de 1:1, ou seja, cada sudomínio sendo implementado em um único bounded context
+##### Imagine um bounded context como uma forma de modularização de negócio que tem como objetivo reduzir o acoplamento interno do código-fonte
+##### Nem todo bounded context precisa ser desenvolvido da mesma forma
+###### Um pode ser desenvolvido com DDD no nível tático e outro com transaction script
+##### A fronteira do bounded context é EXCELENTE para definir um micro serviço
+
+#### DDD é algo que você aplica na organização como um todo
+#### A forma de interação entre cada bounded context dá origem ao Context Map
+
+#### Os padrões de integração definem naturamente o tipo de relacionamento entre cada bounded context
+##### Partnership(Parceria)
+###### Subdomínios diferentes tem um grau de parceria
+###### Duas ou mais equipes podem trabalhar de forma sincronizada numa entrega que envolve dois ou mais bounded context
+
+##### Shared Kernel
+###### Uma espécie de biblioteca compartilhada entre equipes
+###### É relativamente normal compartilhar parte do código comum entre vários bounded contexts, principalmente por propósitos não relacionados diretamento ao negócio mas por infraestrutura
+###### Em termos mais técnicos, o código pode ser compartilhado por meio de relacionamento direto em um monorepo ou algum tipo de biblioteca que deve ser versionada e publicada internamente para que possa ser importada pelos outros bounded contexts
+###### Importante evitar, se precisar faz por meio de biblioteca/pacote
+
+##### Customer/Supplier
+###### Upstream quem fornece / Downstream quem consome
+###### Existe uma relação de fornecimento onde tanto o consumidor quanto o fornecedor podem determinar como deve ser o contrato entre eles
+###### Conformista: Quem fornece não está preocupado com quem consome = Uma integração com uma API externa, contratada no modelo SaaS, acaba quase sempre sendo do tipo conformista já que temo que nos adequar a sua interface, nesses casos é normal oferecer um Open Host Service com uma Published Language
+###### Open Host Service e Published Language: Criar uma representação externa do seu domínio(inverso do ACL) para ficar mais claro para quem vai consumir, um exemplo seria um BFF e uma Facade(Fachada)
+###### Anti-corruption Layer(ACL): Uma camada para traduzir os dados de um fornecedor para a linguagem interna do consumidor, protegendo o domain da linguagem dos seu fornecedor
+###### As relações conformistas geralmente exigem uma tradução para o domínio e isso pode ser feito por meio de adaptadores importantes para inclusive permitir a utilização de diferentes fornecedores
+
+##### Eventualmente vale mais a pena ir por caminhos diferentes e não ter qualquer tipo de relação
+
+#### Microservices
+##### A fronteira do bounded context é EXCELENTE para definir um microserviço
+
+##### Vantagens
+###### Diversidade tecnológica
+###### Melhor controle sobre o débito técnico
+###### Facilidade em acompanhar a evolução tecnolófica(por conta de uma base de código menor)
+
+##### Desafios
+###### Transações distribuidas
+###### Dificuldade em tratar e diagnosticar erros
+###### Complexidade técnica mais alta
+
+##### Fazendo uma boa modelagem estratégica
+###### Divisão de complexidade
+###### Equipes menores
+###### Reuso
+
+##### Comunicação assíncrona, Event-Driven Architecture, CQRS
+###### Escalabilidade
+###### Independência entre os serviços
+###### Tolerância à falhas
+###### Resiliência
+
+##### Uma arquitetura monolítica nem sempre é ruim
+###### Para projetos menores com equipes pequenas, pricipalmente no início da construção de um produto, é a arquitetura que dá mais resultado com o menor esforço e custo de infraestrutura
+###### No início o monolito deixa tudo mais produtivo, ao ficar muito grande perde-se essa produditividade e então possível separação de serviços
+
 # Abstract Factory
 ## Provê uma interface para criação de famílias de objetos
 
