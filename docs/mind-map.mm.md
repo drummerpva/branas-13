@@ -333,6 +333,119 @@
 ###### Para projetos menores com equipes pequenas, pricipalmente no início da construção de um produto, é a arquitetura que dá mais resultado com o menor esforço e custo de infraestrutura
 ###### No início o monolito deixa tudo mais produtivo, ao ficar muito grande perde-se essa produditividade e então possível separação de serviços
 
+# Event-Driven Architecture
+## O que é uma transação?
+### Transação é a abstração de um conjunto de operações que devem ser tratada como uma única unidade lógica
+### Para ter sucesso, todas as suas operações devem ser bem sucedidas ou serem desfeitas
+### Uma forma comum de pensar em uma transação é pelo conceito de ACID(Atomicity, Consistency, Isolation e Durability), relacionado a comandos executados em banco de dados relacional
+### Padrão Unit of Work vai orquestrar todos os comandos de diferentes repositorios fazendo um commit ao final
+### Nem todas as operaçÕes de uma transação são realizadas dentro do banco de dados
+## Teorema CAP(Consitency, Availability e Partition Tolerance)
+### AC: Sem particionamento, os dados estão consistentes e disponíveis
+### AP: Com particionamento, ao optar pela disponibilidades, se a conexão entre os nodos cair, perdemos consitência
+### CP: Com particionamento, ao optar pela consitência, se a conexão entre os nodos cair, perdemos disponibilidade
+## Existem muitas operações independentes, que podem ou não ser distribuídas em serviços diferentes
+### Upload de um vídeo em um canal do youtube
+#### Verificação de direitos autorais
+#### Conversão para diferentes formatos
+#### Transcrição das legendas
+#### Notificação dos inscritos
+#### Atualização do algoritmo de busca
+#### Atualização dos algoritmos de recomendação
+### O que acontece se faltar memoria na hora de converter o vídeo?
+### Compra de um produto em uma e-commerce
+#### Processamento do pagamento
+#### Emissão da NF
+#### Expedição do estoque
+#### Solicitação de coleta
+#### Crédito de pontos de fidelização
+#### Geração de cupom de desconto para a próxima compra
+### O que acontece se a nota fiscal não puder ser emitida porque o certificado digital expirou?
+### Finalização de uma corrida
+#### Cálculo da distância
+#### Cálculo da tarifa
+#### Processamento do pagamento
+#### Envio do comprovante da corrida
+#### Emissão da NF
+### O que acontece se o gateway de pagamento estiver fora do ar?
+## A maior parte dos sistemas tem transações independentes e com muitos pontos de falha
+## Quanto mais complexa e distribuída for a arquitetura, maiores são as chances de alguma coisa dar errado e a resiliência é a capacidade de manter o funcionamentos e serecuperar de falhas
+## Como lidar com transaçÕesde forma resiliente?
+### É possível adotar padrões como Retry, Fallback ou até mesmo SAGA
+#### O padrão Retry simplesmente realiza uma ou mais retentativas em um pequeno intervalo de tempo, elas podem resolver problemas simples como perda de pacotes, oscilações na rede e até mesmo um deploy fora de hora
+#### O padrão Fallback ao se deparar com uma indisponibilidade faz a tentativa em outro serviço, por exemplo, um grande e-commerce deve trabalhar com diversos adquirentes de cartão de crédito para evitar indisponiblidades e até mesmo bloqueios
+#### O padrão SAGA é responsável pelo gerenciamento de uma transação de logna duração por meio de uma sequência de transações locais
+#### 3 Tipos de transação no SAGA
+##### Pivot Transaction: São transações go/no go, ou seja, a partir delas é decidido se o fluxo de execução segue em frente ou é abortado
+##### Compensable Transaction: São desfeitas caso a transação toda seja abortada
+##### Retriable Transaction: Tem uma garantia de execução e podem se recuperar de uma possível falha ou indisponibilidade
+#### Dois tipos de SAGA
+##### Orquestrado: Algoritmo único(oquestrador centralizado) que vai chamando os serviços e analizando seus resultados e tomando decisões com base nisso | Existe uma lógica centralizada que faz a coordenação de cada um dos passos
+##### Coreografada: cada participante publica e trata eventos de forma independente, decidindo como realizar a sua parte | Não terá nenhum agente no meio que saiba como o fluxo funciona
+
+## Uma arquiterura orientada a eventos, ou Event-Driven Architecture, é uma solução para transações distribuídas em um ambiente de microservices tendo baixo acoplamento, de forma assíncrona e sem a ncessidade de um orquestrador(Basicamente é uma SAGA coreografada)
+## O que é um evento?
+### Os eventos são fatos que aconteceram no domínio e que podem ser um gatilho para a execução de regras de negócio
+#### Ex:
+##### OrderPlaced
+##### PaymentApproved
+##### Invoice Generated
+##### RideRequested
+##### RideEnded
+##### PositionUpdated
+### Não são necessariamente relacionadas a microservices,foram criadas em 1987 e podem ser aplicadas em qualquer tipo de transação distribuída de longa duração
+
+## Em Geral sempre terão
+### Producer
+### EventBroker que encapsula as Queues(filas)
+### Consumer
+## O porquê de filas
+### Não existem recursos suficientes disponíveis
+### Se você enfilera você pode ter máquinas menores
+### Seria muito caro ter recursos para atender a todo de forma imediata
+#### Garçon, caixa de supermercado etc...
+### Em diversos momentos, por conta da ociosidade, eles seriam desperdiçados
+## Como fazer a implementação das filas?
+### Localmente por meio de um intermediário que implementa um mecanismo de notificação
+### Os algoritmos geralmente são baseados nos padrões Observer e Mediator
+### Pela rede por meio uma plataforma de mensageria
+### Alguns tipos de plataforma de mensageria
+#### RabbitMQ
+#### Kafka
+#### AWS SQS
+#### ActiveMQ
+#### Google Pub/Sub
+#### ZeroMQ
+#### Pulsar
+
+## Adotar uma arquitetura orientada a eventos tem os seguintes benefícios:
+### Baixo acoplamentos entre os use cases dentro e fora de um serviço
+### Tolerância a falha com capacidade para retomar o processamento do ponto onde parou
+### Melhor controle sobre o débito técnico
+### Disponibilidade e escalabilidade mais alta
+### Menos custos com infraestrutura*
+### Melhor entendimento sobre o que aconteceu, inclusive com a possbilidade de PITR(Point in time recovery)
+
+## Adotar um arquitetura orientada a eventos tem os seguintes desafios:
+### Complexidade técnica mais alta
+### Lidar com a duplicação de eventos
+### Falta de clareza no workflow
+### Dificuldade em trata e diagnosticar erros
+
+## Qual é a diferença entre comando e evento?
+### Enquanto o evento é um fato, que você precisa decidir como lidar, o comando é uma solicitação, eventualmente ela pode ser rejeitada
+### Os nomes dos comantos são sempre no imperativo
+#### PlaceOrder
+#### PayInvoice
+#### GenerateReport
+#### EnrollStudent
+#### UpdateCustomer
+#### UploadFile
+#### RequestRide
+#### UpdatePosition
+### O padrão command handler envolve justamente separar uma solicitação que antes era síncrona em duas etapas, uma que rece o comando e a outra que processa o comando(conectados por uma espécie de evento)
+
+
 # Abstract Factory
 ## Provê uma interface para criação de famílias de objetos
 
