@@ -1,5 +1,5 @@
 import { RepositoryFactory } from '../factory/RepositoryFactory'
-import { AccountRepository } from '../repository/AccountRepository'
+import { AccountGateway } from '../gateway/AccountGateway'
 import { RideRepository } from '../repository/RideRepository'
 
 type Input = {
@@ -9,14 +9,15 @@ type Input = {
 
 export class AcceptRide {
   private rideRepository: RideRepository
-  private accountRepositry: AccountRepository
-  constructor(repositoryFactory: RepositoryFactory) {
+  constructor(
+    repositoryFactory: RepositoryFactory,
+    readonly accountGateway: AccountGateway,
+  ) {
     this.rideRepository = repositoryFactory.createRideRepository()
-    this.accountRepositry = repositoryFactory.createAccountRepository()
   }
 
   async execute(input: Input) {
-    const account = await this.accountRepositry.getById(input.driverId)
+    const account = await this.accountGateway.getById(input.driverId)
     if (!account?.isDriver) throw new Error('Account is not from driver')
     const ride = await this.rideRepository.getById(input.rideId)
     ride.accept(input.driverId)

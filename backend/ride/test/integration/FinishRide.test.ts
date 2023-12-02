@@ -30,17 +30,17 @@ let repositoryFactory: RepositoryFactory
 let httpClient: HttpClient
 beforeAll(() => {
   mysqlAdapter = new MysqlAdpter()
+  httpClient = new AxiosAdapter()
+  accountGateway = new AccountGatewayHttp(httpClient)
   rideRepository = new RideRepositoryDatabase(mysqlAdapter)
   positionRepository = new PositionRepositoryDatabase(mysqlAdapter)
   repositoryFactory = new DatabaseRepositoryFactory(mysqlAdapter)
-  requestRide = new RequestRide(repositoryFactory)
-  getRide = new GetRide(repositoryFactory)
-  acceptRide = new AcceptRide(repositoryFactory)
+  requestRide = new RequestRide(repositoryFactory, accountGateway)
+  getRide = new GetRide(repositoryFactory, accountGateway)
+  acceptRide = new AcceptRide(repositoryFactory, accountGateway)
   updatePosition = new UpdatePositionV2(rideRepository, positionRepository)
   startRide = new StartRide(rideRepository)
   finishRide = new FinishRide(repositoryFactory)
-  httpClient = new AxiosAdapter()
-  accountGateway = new AccountGatewayHttp(httpClient)
 })
 afterAll(async () => {
   await mysqlAdapter.close()

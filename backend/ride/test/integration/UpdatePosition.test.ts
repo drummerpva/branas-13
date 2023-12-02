@@ -13,28 +13,31 @@ import { DatabaseRepositoryFactory } from '../../src/infra/databaase/factory/Dat
 import { AccountGateway } from '../../src/application/gateway/AccountGateway'
 import { AccountGatewayHttp } from '../../src/infra/gateway/AccountGatewayHttp'
 import { AxiosAdapter } from '../../src/infra/http/AxiosAdapter'
+import { HttpClient } from '../../src/infra/http/HttpClient'
 
 let requestRide: RequestRide
 let getRide: GetRide
 let acceptRide: AcceptRide
 let startRide: StartRide
 let updatePosition: UpdatePositionV2
-let accountGateway: AccountGateway
 let mysqlAdapter: MysqlAdpter
 let positionRepository: PositionRepository
 let rideRepository: RideRepository
 let repositoryFactory: RepositoryFactory
+let httpClient: HttpClient
+let accountGateway: AccountGateway
 beforeAll(() => {
   mysqlAdapter = new MysqlAdpter()
+  httpClient = new AxiosAdapter()
+  accountGateway = new AccountGatewayHttp(httpClient)
   rideRepository = new RideRepositoryDatabase(mysqlAdapter)
   positionRepository = new PositionRepositoryDatabase(mysqlAdapter)
   repositoryFactory = new DatabaseRepositoryFactory(mysqlAdapter)
-  requestRide = new RequestRide(repositoryFactory)
-  getRide = new GetRide(repositoryFactory)
-  acceptRide = new AcceptRide(repositoryFactory)
+  requestRide = new RequestRide(repositoryFactory, accountGateway)
+  getRide = new GetRide(repositoryFactory, accountGateway)
+  acceptRide = new AcceptRide(repositoryFactory, accountGateway)
   updatePosition = new UpdatePositionV2(rideRepository, positionRepository)
   startRide = new StartRide(rideRepository)
-  accountGateway = new AccountGatewayHttp(new AxiosAdapter())
 })
 afterAll(async () => {
   await mysqlAdapter.close()

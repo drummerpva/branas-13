@@ -1,5 +1,5 @@
 import { RepositoryFactory } from '../factory/RepositoryFactory'
-import { AccountRepository } from '../repository/AccountRepository'
+import { AccountGateway } from '../gateway/AccountGateway'
 import { RideRepository } from '../repository/RideRepository'
 
 type Output = {
@@ -26,15 +26,16 @@ type Output = {
 }
 export class GetRide {
   private rideRepository: RideRepository
-  private accountRepository: AccountRepository
-  constructor(repositoryFactory: RepositoryFactory) {
+  constructor(
+    repositoryFactory: RepositoryFactory,
+    readonly accountGateway: AccountGateway,
+  ) {
     this.rideRepository = repositoryFactory.createRideRepository()
-    this.accountRepository = repositoryFactory.createAccountRepository()
   }
 
   async execute(rideId: string): Promise<Output> {
     const ride = await this.rideRepository.getById(rideId)
-    const passenger = await this.accountRepository.getById(ride.passengerId)
+    const passenger = await this.accountGateway.getById(ride.passengerId)
     if (!ride || !passenger) throw new Error()
     return {
       rideId: ride.rideId,
@@ -49,10 +50,10 @@ export class GetRide {
       distance: ride.getDistance(),
       fare: ride.getFare(),
       passenger: {
-        name: passenger.name.getValue(),
-        email: passenger.email.getValue(),
-        cpf: passenger.cpf.getValue(),
-        carPlate: passenger.carPlate.getValue(),
+        name: passenger.name,
+        email: passenger.email,
+        cpf: passenger.cpf,
+        carPlate: passenger.carPlate,
         isPassenger: passenger.isPassenger,
         isDriver: passenger.isDriver,
         accountId: passenger.accountId,
