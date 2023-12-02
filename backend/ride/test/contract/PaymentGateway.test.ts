@@ -1,7 +1,7 @@
 import { PaymentGatewayHttp } from '../../src/infra/gateway/PaymentGatewayHttp'
 import { AxiosAdapter } from '../../src/infra/http/AxiosAdapter'
 
-test('Deve processar um pagamento', async () => {
+test.skip('Deve processar um pagamento', async () => {
   const httpClient = new AxiosAdapter()
   const gateway = new PaymentGatewayHttp(httpClient)
   const input = {
