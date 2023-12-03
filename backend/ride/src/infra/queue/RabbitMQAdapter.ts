@@ -8,4 +8,20 @@ export class RabbitMQAdapter implements Queue {
     await channel.assertQueue(queue, { durable: true })
     channel.sendToQueue(queue, Buffer.from(JSON.stringify(input)))
   }
+
+  async consume(
+    queue: string,
+    callback: (input: any) => Promise<void>,
+  ): Promise<void> {
+    const connection = await amqp.connect('amqp://localhost')
+    const channel = await connection.createChannel()
+    await channel.assertQueue(queue, { durable: true })
+    await channel.consume(queue, async (message: any) => {
+      if (message) {
+        const input = JSON.parse(message.content.toString())
+        await callback(input)
+        channel.ack(message)
+      }
+    })
+  }
 }
