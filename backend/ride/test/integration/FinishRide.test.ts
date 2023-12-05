@@ -15,6 +15,8 @@ import { AccountGateway } from '../../src/application/gateway/AccountGateway'
 import { HttpClient } from '../../src/infra/http/HttpClient'
 import { AxiosAdapter } from '../../src/infra/http/AxiosAdapter'
 import { AccountGatewayHttp } from '../../src/infra/gateway/AccountGatewayHttp'
+import { GetRides } from '../../src/application/usecase/GetRides'
+import { GetRides as GetRidesQuey } from '../../src/application/query/GetRides'
 
 let requestRide: RequestRide
 let getRide: GetRide
@@ -28,6 +30,8 @@ let positionRepository: PositionRepository
 let rideRepository: RideRepository
 let repositoryFactory: RepositoryFactory
 let httpClient: HttpClient
+let getRides: GetRides
+let getRidesQuery: GetRidesQuey
 beforeAll(() => {
   mysqlAdapter = new MysqlAdpter()
   httpClient = new AxiosAdapter()
@@ -41,6 +45,8 @@ beforeAll(() => {
   updatePosition = new UpdatePositionV2(rideRepository, positionRepository)
   startRide = new StartRide(rideRepository)
   finishRide = new FinishRide(repositoryFactory)
+  getRides = new GetRides(repositoryFactory, accountGateway)
+  getRidesQuery = new GetRidesQuey(mysqlAdapter)
 })
 afterAll(async () => {
   await mysqlAdapter.close()
@@ -103,4 +109,6 @@ test('Deve solicitar, aceitar, iniciar e atualizar a posição de uma corrida', 
   expect(outputGetRide.status).toBe('completed')
   expect(outputGetRide.distance).toBe(10)
   expect(outputGetRide.fare).toBe(21)
+  const rides = await getRidesQuery.execute()
+  expect(rides.length).toBeGreaterThanOrEqual(1)
 })

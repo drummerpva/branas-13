@@ -11,8 +11,12 @@ export class QueueController {
 
   registerConsumers() {
     console.log('Payment queue running...')
-    this.queue?.consume('rideFinished', async (input: any) => {
-      await this.processPayment?.execute(input)
-    })
+    this.queue?.consume(
+      'rideFinished',
+      'rideFinished.processPayment',
+      async (input: any) => {
+        await this.processPayment?.execute(input)
+      },
+    )
   }
 }

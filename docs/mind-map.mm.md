@@ -164,6 +164,12 @@
 ## Permite separar instanciação da re-hidratação
 ## Muito útil para traser semântica a criação e ter opção caso a linguagem não tenha sobrecarga de construtor
 
+# Abstract Factory
+## Provê uma interface para criação de famílias de objetos
+
+# Singleton
+## Ele só é considerado um anti pattern caso você guarde estado dentro dele
+
 # DDD(Domain Driven Design)
 ## O que é um domínio?
 ### O domínio é o problema, em termos de negócio, que precisa ser resolvido independente da tecnologia que será utilizada
@@ -445,9 +451,33 @@
 #### UpdatePosition
 ### O padrão command handler envolve justamente separar uma solicitação que antes era síncrona em duas etapas, uma que rece o comando e a outra que processa o comando(conectados por uma espécie de evento)
 
+# CQRS (Command Query Responsability Segregation)
+## Como fazer para consumir dados distribuidos em um ambiente de microservices?
+### A primeira forma é usando o padrão API Composition, ou seja, invocando cada uma das interfaces dos serviços distribuídos para obter os dados, acumulando tudo em memória(Síncrono)
+#### Por conta da latência envolvida na obtenção dos dados de cada serviço o tempo de resposta pode ser alto, além do consumo de memória elevado
+#### Além do problema com os recursos, nem sempre as queries disponíveis são adequadas, por exemplo, como fazer para retornar os 10 motoristas que mais faturaram em 2022?
+##### Seria necessário solicitar ao serviço de pagamento e depois consultar o motorista pelo driverId, um por um, no serviço de conta
+### O CQRS, foi muito divulgado por Greg Young e envolve separar o modelo de dados de mutação do modelo de dados de consulta
+#### Command conhecido também por modifier ou mutator
+#### O modelo de dados de mutação pode e mutias vezes deve ser diferente do modelo de dados de consulta, consulta e leitura são coisas diferentes
+#### Vamos separar em duas situações, a primeira é no uso de Domain-Driven Design tático com Repository a outra é com dados distribuídos
+#### Domain-Driven Design ou qualquer outro tipo de orientação a domínio
+#### Normalmente, a peristênmcia dos aggregates é feita por meio dos repositories
+#### A granularidade do repository é por aggregate, que deve ser o menor possível
+#### Lembre-se que a relação entre os aggregates é por identidade e dessa forma pode ser necessário obter diversos aggregates para consolidar as informações de retorno requeridas
+#### Dependendo da consulta pode ser complexo obter dados de múltiplos aggregates
+#### Evite excesso métodos de busca com filtros, paginação, ordenação em repositories
+#### Como manter o banco de leitura sincronizado?
+##### É possível atualizar ao longo da transação de escrita de forma síncrona ou mesmo criar um mecanismo mais resiliente assíncrono, publicando eventos e consumindo em uma fila
+#### Para utilizar CQRS precisamos obrigatoriamente separar os dados de escrita e de leitura?
+##### Não necessariamente
+##### O principal motivo é performance, o modelo de persistência nem sempre é otimizado para consulta
+#### O banco de dados de escrita precisa ser relacional e o de leitura precisa ser NoSQL?
+##### Se o objetivo é armazenar múltiplas pojeções não estruturadas, talvez seja melhor usar NoSQL
 
-# Abstract Factory
-## Provê uma interface para criação de famílias de objetos
 
-# Singleton
-## Ele só é considerado um anti pattern caso você guarde estado dentro dele
+### O outro tipo de cenário envolve microservices ou tipo de ambiente com dados distribuídos
+
+
+
+

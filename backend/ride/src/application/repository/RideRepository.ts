@@ -6,4 +6,5 @@ export interface RideRepository {
   getById(rideId: string): Promise<Ride>
   getActiveRideByPassengerId(passengerId: string): Promise<any>
   getActiveRideByDriverId(driverId: string): Promise<any>
+  list(): Promise<Ride[]>
 }

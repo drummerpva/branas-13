@@ -70,4 +70,26 @@ export class RideRepositoryDatabase implements RideRepository {
     )
     return rides
   }
+
+  async list(): Promise<Ride[]> {
+    const rides: Ride[] = []
+    const ridesData = await this.connection.query(`SELECT * FROM ride`, [])
+    for (const rideData of ridesData) {
+      const ride = Ride.restore(
+        rideData.ride_id,
+        rideData.passenger_id,
+        rideData.driver_id,
+        rideData.status,
+        Number(rideData.from_lat),
+        Number(rideData.from_long),
+        Number(rideData.to_lat),
+        Number(rideData.to_long),
+        rideData.date,
+        Number(rideData.distance),
+        Number(rideData.fare),
+      )
+      rides.push(ride)
+    }
+    return rides
+  }
 }

@@ -1,4 +1,4 @@
-import { RequestRide } from '../../application/usecase/RequestRide'
+import { UpdateRideProjection } from '../../application/handler/UpdateRideProjection'
 import { inject } from '../dependency-injection/Inject'
 import { Queue } from '../queue/Queue'
 
@@ -6,14 +6,18 @@ export class QueueController {
   @inject('queue')
   queue?: Queue
 
-  @inject('requestRide')
-  requestRide?: RequestRide
+  @inject('updateRideProjection')
+  updateRideProjection?: UpdateRideProjection
 
   registerConsumers() {
     console.log('Ride queue running...')
     // command handler - execute
-    this.queue?.consume('requestRide', async (input: any) => {
-      await this.requestRide?.execute(input)
-    })
+    this.queue?.consume(
+      'rideFinished',
+      'rideFinished.updateRideProjection',
+      async (input: any) => {
+        await this.updateRideProjection?.execute(input)
+      },
+    )
   }
 }

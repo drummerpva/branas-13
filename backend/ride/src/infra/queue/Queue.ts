@@ -1,4 +1,8 @@
 export interface Queue {
-  publish(queue: string, input: any): Promise<void>
-  consume(queue: string, callback: (input: any) => Promise<void>): Promise<void>
+  publish(exchange: string, input: any): Promise<void>
+  consume(
+    exchange: string,
+    queue: string,
+    callback: (input: any) => Promise<void>,
+  ): Promise<void>
 }
