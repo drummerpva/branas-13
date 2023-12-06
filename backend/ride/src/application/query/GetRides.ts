@@ -1,4 +1,6 @@
 import { Connection } from '../../infra/databaase/Connection'
+import { JSONPresenter } from '../../infra/presenter/JSONPresenter'
+import { Presenter } from '../presenter/Presenter'
 
 type Output = {
   rideId: string
@@ -11,7 +13,10 @@ type Output = {
 } */
 // Read Model
 export class GetRides {
-  constructor(readonly connection: Connection) {}
+  constructor(
+    readonly connection: Connection,
+    readonly presenter: Presenter = new JSONPresenter(),
+  ) {}
 
   async execute(): Promise<Output> {
     const ridesData = await this.connection.query(
@@ -23,10 +28,11 @@ export class GetRides {
     `,
       [],
     )
-    return ridesData.map((rideData: any) => ({
+    const output = ridesData.map((rideData: any) => ({
       rideId: rideData.ride_id,
       passengerName: rideData.passenger_name,
       driverEmail: rideData.driver_email,
     }))
+    return this.presenter.present(output)
   }
 }
