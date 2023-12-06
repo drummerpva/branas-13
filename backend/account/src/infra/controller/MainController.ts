@@ -3,6 +3,7 @@ import { inject } from '../dependency-injection/Inject'
 import { Signup } from '../../application/usecase/Signup'
 import { GetAccount } from '../../application/usecase/GetAccount'
 import { Registry } from '../dependency-injection/Registry'
+import { VerifyToken } from '../../application/usecase/VerifyToken'
 
 export class MainController {
   // Usando decorators(annotations) para injetar dependências
@@ -11,6 +12,9 @@ export class MainController {
 
   @inject('getAccount')
   getAccount?: GetAccount
+
+  @inject('verifyToken')
+  verifyToken?: VerifyToken
 
   @inject('httpServer')
   httpServer?: HttpServer
@@ -26,6 +30,14 @@ export class MainController {
       const output = await this.signup?.execute(body)
       return output
     })
+    this.httpServer?.on(
+      'post',
+      '/verify_token',
+      async (params: any, body: any) => {
+        const output = await this.verifyToken?.execute(body)
+        return output
+      },
+    )
     this.httpServer?.on('get', '/accounts/:accountId', async (params: any) => {
       const output = await this.getAccount?.execute(params.accountId)
       return output

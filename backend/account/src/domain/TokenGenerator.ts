@@ -1,4 +1,4 @@
-import { sign } from 'jsonwebtoken'
+import { sign, verify } from 'jsonwebtoken'
 import { Account } from './Account'
 
 export class TokenGenerator {
@@ -8,5 +8,10 @@ export class TokenGenerator {
       'secret',
     )
     return token
+  }
+
+  static verify(token: string): any {
+    const payload = verify(token, 'secret')
+    return payload
   }
 }

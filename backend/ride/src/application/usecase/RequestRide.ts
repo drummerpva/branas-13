@@ -2,6 +2,7 @@ import { Ride } from '../../domain/Ride'
 import { RepositoryFactory } from '../factory/RepositoryFactory'
 import { AccountGateway } from '../gateway/AccountGateway'
 import { RideRepository } from '../repository/RideRepository'
+import { UseCase } from './UseCase'
 type Input = {
   passengerId: string
   from: {
@@ -12,13 +13,14 @@ type Input = {
     lat: number
     long: number
   }
+  token?: string
 }
 
 type Output = {
   rideId: string
 }
 
-export class RequestRide {
+export class RequestRide implements UseCase {
   private rideRepository: RideRepository
   constructor(
     repositoryFactory: RepositoryFactory,

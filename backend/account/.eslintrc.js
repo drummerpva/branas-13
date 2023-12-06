@@ -7,5 +7,6 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-explicit-any': 'off',
     'no-useless-constructor': 'off',
+    'no-use-before-define': 'off',
   },
 }

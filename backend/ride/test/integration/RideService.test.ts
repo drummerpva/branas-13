@@ -57,6 +57,8 @@ test('Deve solicitar uma corrida e receber a rideId', async () => {
       lat: -27.496887588317275,
       long: -48.522234807851476,
     },
+    token:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcGYiOiI5ODc2NTQzMjEwMCIsImlhdCI6MTcwMTAwMzYwMDAwMCwiZXhwaXJlc0luIjoxMDAwMDAwMDB9.ebqdbU8HpWsf-M8hJMsjaUwxnQFrDj7MScnpowoE1qU',
   }
   const outputRequestRide = await requestRide.execute(inputRequestRide)
   expect(outputRequestRide.rideId).toBeDefined()
