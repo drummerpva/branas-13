@@ -11,8 +11,6 @@ import { AccountRepository } from '../../src/application/repository/AccountRepos
 import { AccountRepositoryDatabase } from '../../src/infra/repository/AccountRepositoryDatabase'
 import { RepositoryFactory } from '../../src/application/factory/RepositoryFactory'
 import { DatabaseRepositoryFactory } from '../../src/infra/databaase/factory/DatabaseRepositoryFactory'
-import { PositionRepository } from '../../src/application/repository/PositionRepository'
-import { RideRepository } from '../../src/application/repository/RideRepository'
 
 let signup: Signup
 let getAccount: GetAccount
@@ -139,6 +137,7 @@ test('Deve criar um passageiro com Stub', async function () {
         input.isPassenger,
         false,
         '',
+        '',
       ),
     )
   const account = await getAccount.execute(output.accountId)
@@ -211,14 +210,8 @@ test('Deve criar um passageiro com Mock', async function () {
 test('Deve criar um passageiro com Fake', async function () {
   const accountRepositoryFake = new AccountRepositoryMemory()
   const repositoryFactoryFake: RepositoryFactory = {
-    createRideRepository: function (): RideRepository {
-      throw new Error('Function not implemented.')
-    },
     createAccountRepository: function (): AccountRepository {
       return accountRepositoryFake
-    },
-    createPositionRepository: function (): PositionRepository {
-      throw new Error('Function not implemented.')
     },
   }
   const input = {

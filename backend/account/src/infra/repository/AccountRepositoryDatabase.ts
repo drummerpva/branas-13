@@ -25,6 +25,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
         account.password.algorithm,
         account.password.salt,
       ],
+      true,
     )
   }
 
@@ -32,6 +33,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
     const [accountData] = await this.connection.query(
       'select * from account where email = ?',
       [email],
+      false,
     )
     if (!accountData) return
     return Account.restore(
@@ -54,6 +56,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
     const [accountData] = await this.connection.query(
       'select * from account where account_id = ?',
       [accountId],
+      false,
     )
     if (!accountData) return
     return Account.restore(

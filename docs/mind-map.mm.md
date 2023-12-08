@@ -485,3 +485,4 @@
 ## Invariancia deve manter preservada
 ### não deve quebrar o estado interno do objeto conceitualmente ao varia subclasse
 
+# Unit of Work
