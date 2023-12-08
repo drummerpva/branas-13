@@ -475,9 +475,13 @@
 #### O banco de dados de escrita precisa ser relacional e o de leitura precisa ser NoSQL?
 ##### Se o objetivo é armazenar múltiplas pojeções não estruturadas, talvez seja melhor usar NoSQL
 
-
 ### O outro tipo de cenário envolve microservices ou tipo de ambiente com dados distribuídos
 
 
-
+# Liskov Substitution
+## Se S é subclasse de T então objetos do tipo T podem ser substituídos por objetos do tipo S sem quebrar o funcionamento do Programa
+## Pre-condições não podem ser fortalecidas em subtipos
+## Pós-condições devem retornar no mínimo o esperado no contrato pai
+## Invariancia deve manter preservada
+### não deve quebrar o estado interno do objeto conceitualmente ao varia subclasse
 

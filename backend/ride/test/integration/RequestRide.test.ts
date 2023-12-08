@@ -9,6 +9,7 @@ import { AxiosAdapter } from '../../src/infra/http/AxiosAdapter'
 import { HttpClient } from '../../src/infra/http/HttpClient'
 import { UseCase } from '../../src/application/usecase/UseCase'
 import { AuthenticationDecorator } from '../../src/application/decorator/AuthenticationDecorator'
+import { FetchAdapter } from '../../src/infra/http/FetchAdapter'
 
 let requestRide: UseCase
 let mysqlAdapter: MysqlAdpter
@@ -17,7 +18,7 @@ let httpClient: HttpClient
 let accountGateway: AccountGateway
 beforeAll(() => {
   mysqlAdapter = new MysqlAdpter()
-  httpClient = new AxiosAdapter()
+  httpClient = new FetchAdapter()
   accountGateway = new AccountGatewayHttp(httpClient)
   repositoryFactory = new DatabaseRepositoryFactory(mysqlAdapter)
   requestRide = new AuthenticationDecorator(
