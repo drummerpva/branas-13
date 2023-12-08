@@ -25,14 +25,17 @@ export class UnitOfWork implements Connection {
   }
 
   async execute(): Promise<void> {
-    await this.connection.beginTransaction()
+    const connection = await this.connection.getConnection()
+    await connection.beginTransaction()
     try {
       for (const transaction of this.transactions) {
-        this.connection.query(transaction.statement, transaction.data)
+        await connection.query(transaction.statement, transaction.data)
       }
-      await this.connection.commit()
+      await connection.commit()
     } catch (error) {
-      await this.connection.rollback()
+      await connection.rollback()
+    } finally {
+      connection.release()
     }
   }
 
